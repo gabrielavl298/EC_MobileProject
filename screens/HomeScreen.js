@@ -4,11 +4,15 @@ import { StyleSheet, Text, View,
 } from 'react-native'
 import { Card, Button  } from 'react-native-elements';
 
-//Themess
+//Firebase
+import { collection, getDocs } from "firebase/firestore";
+import { db } from '../config/cFirebase'
+
 import Themes from '../constants/Themes';
 
 export default function HomeScreen() {
 
+    const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState([]);
     const [scrollViewWidth, setScrollViewWidth] = React.useState(0);
 
@@ -29,10 +33,19 @@ export default function HomeScreen() {
         }
     }
 
+    //Products from firebase
+    const getProducts = async () => {
+        const querySnapshot = await getDocs(collection(db, "productoInfo"));
+        querySnapshot.forEach((doc) => {
+        console.log(`${doc.id} => ${doc.data()}`);
+        });
+    }
+
     useEffect(() => {
         getMovies();
+        let d = getProducts();
         return () => {
-            
+            console.log("clean up");
         }
     }, [])
 
