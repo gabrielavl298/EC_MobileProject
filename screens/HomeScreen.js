@@ -22,28 +22,38 @@ export default function HomeScreen() {
     const pan = React.useRef(new Animated.ValueXY()).current;
 
     const getMovies = async () => {
-        try {
+        /*try {
         const response = await fetch('https://reactnative.dev/movies.json');
         const json = await response.json();
         setData(json.movies);
         } catch (error) {
         console.error(error);
         } finally {
+        
         setLoading(false);
-        }
+        }*/
     }
 
     //Products from firebase
     const getProducts = async () => {
+        let data = [];
         const querySnapshot = await getDocs(collection(db, "productoInfo"));
         querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data()}`);
+            let product = {
+                id: doc.id,
+                data: doc.data()
+            }
+        //console.log(`${doc.id} => ${doc.data()}`);
+        data.push(product);
         });
+        console.log("Data[0]", data[0]);
+        setData(data);
+
+
     }
 
     useEffect(() => {
-        getMovies();
-        let d = getProducts();
+        getProducts();
         return () => {
             console.log("clean up");
         }
@@ -87,12 +97,14 @@ export default function HomeScreen() {
                                 <Card.Divider
                                     orientation = "vertical"
                                 />
-                                <Card.Title>{item. title}</Card.Title>
+                                <Card.Title>{item.data.nombre}</Card.Title>
                                 <Card.Divider/>
                                     <Button
                                     buttonStyle={{borderRadius: 0, marginLeft: 0, marginRight: 0, marginBottom: 0, backgroundColor: Themes.COLORS.PRIMARY}}
                                     title='VIEW NOW' 
-                                    onPress = {() => {navigation.navigate('ProductScreen')}}
+                                    onPress = {() => {navigation.navigate('ProductScreen', 
+                                        {pData: item}
+                                    )}}
                                     />
                             </Card>
                        </View>
