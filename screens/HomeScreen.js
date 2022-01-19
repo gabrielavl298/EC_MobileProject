@@ -4,13 +4,17 @@ import { StyleSheet, Text, View,
 } from 'react-native'
 import { Card, Button  } from 'react-native-elements';
 
+//R-Navigation
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 //Firebase
 import { collection, getDocs } from "firebase/firestore";
 import { db } from '../config/cFirebase'
 
 import Themes from '../constants/Themes';
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
 
     const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState([]);
@@ -48,8 +52,6 @@ export default function HomeScreen() {
         });
         console.log("Data[0]", data[0]);
         setData(data);
-
-
     }
 
     useEffect(() => {
