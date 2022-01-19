@@ -10,7 +10,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Themes from '../constants/Themes'
 
-const ProductViewScreen = ({navigation}) => {
+const ProductViewScreen = ({route}, {navigation}) => {
+    const pData = route.params.pData;
     function AddToCart(){
         Alert.alert(
             "Product added!",
@@ -20,14 +21,13 @@ const ProductViewScreen = ({navigation}) => {
             ]
         );
     }
-    const [amorcito, setAmorcito] = useState(0)
 
     useEffect(() => {
-        console.log("el valor de amorcito es:" + amorcito)
+        //console.log("el valor de pData es:", pData )
         return () => {
             
         }
-    }, [amorcito])
+    }, [])
 
 
     return (
@@ -42,15 +42,13 @@ const ProductViewScreen = ({navigation}) => {
                 
             </View>
             <View style= {styles.productDataContent}>
-                <Text h1>AMORCITO {amorcito}</Text>
-                <Text h2>PRODUCT PRICE</Text>
+                <Text h1> {pData.data.nombre} </Text>
+                <Text h2>${pData.data.precio}</Text>
                 <View style = {styles.productDescriptionContainer}>
                     <Text h3 style = {{fontSize: 10}} >Description</Text>
                     <ScrollView>
                         <Text style = {styles.productDescriptionTetx} >
-                            Product information Product information Product information Product information Product information Product information
-                            Product information Product information Product information Product information Product information Product information
-                            Product information Product information Product information Product information Product information Product information
+                            {pData.data.descripcion}
                         </Text>
                     </ScrollView>
                 </View>
@@ -59,11 +57,6 @@ const ProductViewScreen = ({navigation}) => {
                     icon = {<Icon name='shopping-cart' size = {15} color='white' style = {{marginRight: 10}}/>}
                     buttonStyle = {{backgroundColor: Themes.COLORS.PRIMARY, marginTop: 20}}
                     onPress ={() => {AddToCart()}}
-                />
-                <Button
-                    title = 'Aumentar en 1'
-                    buttonStyle = {{backgroundColor: Themes.COLORS.PRIMARY, marginTop: 20}}
-                    onPress ={() => {setAmorcito(amorcito+1);}}
                 />
             </View>
         </View>
