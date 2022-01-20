@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 import React, { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
@@ -9,7 +10,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //Firebase
 
 //Stacks
-import HomeStack from './navigation/HomeStack'
+import DrawerNav from './navigation/DrawerNav';
 
 //utils
 import { StateProvider } from './utils/StateProvider';
@@ -24,7 +25,7 @@ export default function App() {
       <StateProvider initialState={initialState} reducer={reducer}>
         <NavigationContainer>
           <Stack.Navigator>
-            <Stack.Screen name="HomeStack" component={HomeStack} options={{headerShown: false}} />
+            <Stack.Screen name="DrawerNav" component={DrawerNav} options={{headerShown: false}} />
           </Stack.Navigator>
         </NavigationContainer>
         <StatusBar style="auto" />
