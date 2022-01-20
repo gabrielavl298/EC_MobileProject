@@ -18,6 +18,7 @@ import reducer, { initialState } from './utils/Reducer';
 
 const Stack = createNativeStackNavigator();
 export default function App() {
+  
   return (
     <View style={styles.container}>
       <StateProvider initialState={initialState} reducer={reducer}>

@@ -50,7 +50,7 @@ export default function HomeScreen({navigation}) {
         //console.log(`${doc.id} => ${doc.data()}`);
         data.push(product);
         });
-        console.log("Data[0]", data[0]);
+        //console.log("Data[0]", data[0]);
         setData(data);
     }
 
