@@ -10,16 +10,39 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Themes from '../constants/Themes'
 
+//Uitls
+import { actionTypes } from '../utils/Reducer';
+import { useStateValue } from '../utils/StateProvider';
+
 const ProductViewScreen = ({route}, {navigation}) => {
+
+    const [{basket}, dispatch] = useStateValue();
     const pData = route.params.pData;
     function AddToCart(){
         Alert.alert(
             "Product added!",
             "See your cart to view your products ;)",
             [
-                { text: "OK", onPress: () => navigation.navigate('HomeScreen')}
+                //{ text: "OK", onPress: () => navigation.navigate('HomeScreen')}
+                { text: "OK"}
             ]
         );
+
+        dispatch({
+            type: actionTypes.ADD_TO_BASKET,
+            item: {
+                id: pData.id,
+                id_empresa: pData.data.id_empresa,
+                nombre: pData.data.nombre,
+                descripcion: pData.data.descripcion,
+                image: pData.data.image,
+                precio: pData.data.precio,
+                titulo: pData.data.titulo
+
+            }
+        });
+
+
     }
 
     useEffect(() => {

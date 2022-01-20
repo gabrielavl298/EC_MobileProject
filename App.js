@@ -11,17 +11,24 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //Stacks
 import HomeStack from './navigation/HomeStack'
 
+//utils
+import { StateProvider } from './utils/StateProvider';
+import reducer, { initialState } from './utils/Reducer';
+
 
 const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <View style={styles.container}>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="HomeStack" component={HomeStack} options={{headerShown: false}} />
-        </Stack.Navigator>
-      </NavigationContainer>
-      <StatusBar style="auto" />
+      <StateProvider initialState={initialState} reducer={reducer}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="HomeStack" component={HomeStack} options={{headerShown: false}} />
+          </Stack.Navigator>
+        </NavigationContainer>
+        <StatusBar style="auto" />
+      </StateProvider>
+      
     </View>
   );
 }
