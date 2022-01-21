@@ -8,6 +8,7 @@ import Themes from '../constants/Themes'
 
 //Utils
 import { useStateValue } from '../utils/StateProvider';
+import { actionTypes } from '../utils/Reducer';
 
 const CartScreen = () => {
     const [isLoading, setLoading] = useState(true);
@@ -26,6 +27,11 @@ const CartScreen = () => {
         setLoading(false);
         }
     }
+
+    const removeItem = (id) => dispatch({
+        type: actionTypes.REMOVE_FROM_CART,
+        id: id
+    })
 
     useEffect(() => {
         //getMovies();
@@ -77,6 +83,7 @@ const CartScreen = () => {
                                     color: 'white',
                                 }}
                                 buttonStyle= {{backgroundColor: Themes.COLORS.ERROR}}
+                                onPress={() => removeItem(item.id)}
                             />
                         </View>
                     </View>
