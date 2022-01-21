@@ -29,9 +29,27 @@ const CartScreen = () => {
     }
 
     const removeItem = (id) => dispatch({
-        type: actionTypes.REMOVE_FROM_CART,
+        type: actionTypes.REMOVE_FROM_BASKET,
         id: id
     })
+
+    const addOne = (id) => dispatch({
+        type: actionTypes.ADD_ONE_TO_BASKET,
+        id: id
+    })
+
+    const quitOne = (id) => dispatch({
+        type: actionTypes.REMOVE_ONE_TO_BASKET,
+        id: id
+    })
+
+    const setQuantity = (id, quantity) => {
+        console.log("quantity:", quantity);
+        dispatch({
+        type: actionTypes.SET_QUANTITY_TO_BASKET,
+        id: id,
+        cantidad: quantity
+    })}
 
     useEffect(() => {
         //getMovies();
@@ -49,7 +67,7 @@ const CartScreen = () => {
             <ListItem.Content style={{flexDirection: 'row'}} >
                 <View style={{flex:1}}>
                     <ListItem.Title>{item.titulo}</ListItem.Title>
-                    <ListItem.Subtitle>Subtotal: ${item.precio}</ListItem.Subtitle>
+                    <ListItem.Subtitle>Subtotal: ${item.precio * item.cantidad}</ListItem.Subtitle>
                 </View>
                 <View style = {{flex:2}}>
                     <View style = {{flex:1,  flexDirection:'row', alignItems:'center', justifyContent: 'center'}}>
@@ -57,19 +75,27 @@ const CartScreen = () => {
                             <Button 
                                 title= '<'
                                 buttonStyle= {{width: '50%', backgroundColor: Themes.COLORS.PRIMARY}}
+                                onPress={() => quitOne(item.id)}
                             />
                         </View>
                         <View style = {{flex:1}}>
                             <Input
                                 inputStyle = {{textAlign: 'center'}}
                                 inputContainerStyle = {{width: '100%'}}
-                                value = '1'
+                                value = {String(item.cantidad)}
+                                onChange = {(e) => setQuantity(item.id, (e.nativeEvent.text).replace(/[^0-9]/g, ''))}
+                                keyboardType='numeric'
+                                onEndEditing = {(e) => {
+                                    if(e.nativeEvent.text.length == 0) setQuantity(item.id, 1)
+                                }}
+
                             /> 
                         </View>
                         <View style = {{flex:1}}>
                             <Button 
                                 title= '>'
                                 buttonStyle= {{width: '50%', backgroundColor: Themes.COLORS.PRIMARY}}
+                                onPress={() => addOne(item.id)}
                             />
                         </View>
                     </View>

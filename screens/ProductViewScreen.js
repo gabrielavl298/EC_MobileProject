@@ -37,7 +37,9 @@ const ProductViewScreen = ({route}, {navigation}) => {
                 descripcion: pData.data.descripcion,
                 image: pData.data.image,
                 precio: pData.data.precio,
-                titulo: pData.data.titulo
+                titulo: pData.data.titulo,
+                cantidad: 1,
+                habilitado: true
 
             }
         });
