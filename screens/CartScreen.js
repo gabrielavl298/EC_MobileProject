@@ -6,9 +6,14 @@ import {colors, Input, Button, Text, ListItem, Avatar} from 'react-native-elemen
 
 import Themes from '../constants/Themes'
 
+//Utils
+import { useStateValue } from '../utils/StateProvider';
+
 const CartScreen = () => {
     const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState([]);
+
+    const [{basket}, dispatch] = useStateValue();
 
     const getMovies = async () => {
         try {
@@ -23,8 +28,8 @@ const CartScreen = () => {
     }
 
     useEffect(() => {
-        getMovies();
-        console.log(data);
+        //getMovies();
+        console.log("Basket data:", basket);
     }, []);
 
 
@@ -37,29 +42,45 @@ const CartScreen = () => {
             />
             <ListItem.Content style={{flexDirection: 'row'}} >
                 <View style={{flex:1}}>
-                    <ListItem.Title>{item.title}</ListItem.Title>
-                    <ListItem.Subtitle>{item.releaseYear}</ListItem.Subtitle>
+                    <ListItem.Title>{item.titulo}</ListItem.Title>
+                    <ListItem.Subtitle>Subtotal: ${item.precio}</ListItem.Subtitle>
                 </View>
-                <View style = {{flex:2, flexDirection:'row', alignItems:'center', justifyContent: 'center'}}>
-                    <View style = {{flex:1, alignItems:'flex-end'}}>
-                        <Button 
-                            title= '<'
-                            buttonStyle= {{width: '50%', backgroundColor: Themes.COLORS.PRIMARY}}
-                        />
+                <View style = {{flex:2}}>
+                    <View style = {{flex:1,  flexDirection:'row', alignItems:'center', justifyContent: 'center'}}>
+                        <View style = {{flex:1, alignItems:'flex-end'}}>
+                            <Button 
+                                title= '<'
+                                buttonStyle= {{width: '50%', backgroundColor: Themes.COLORS.PRIMARY}}
+                            />
+                        </View>
+                        <View style = {{flex:1}}>
+                            <Input
+                                inputStyle = {{textAlign: 'center'}}
+                                inputContainerStyle = {{width: '100%'}}
+                                value = '1'
+                            /> 
+                        </View>
+                        <View style = {{flex:1}}>
+                            <Button 
+                                title= '>'
+                                buttonStyle= {{width: '50%', backgroundColor: Themes.COLORS.PRIMARY}}
+                            />
+                        </View>
                     </View>
-                    <View style = {{flex:1}}>
-                        <Input
-                            inputStyle = {{textAlign: 'center'}}
-                            inputContainerStyle = {{width: '100%'}}
-                            value = '0'
-                        /> 
+                    <View style = {{flex:1, alignItems:'center', justifyContent: 'center'}}>
+                        <View>
+                            <Button 
+                                icon = {{
+                                    name: 'trash',
+                                    type: 'font-awesome',
+                                    size: 15,
+                                    color: 'white',
+                                }}
+                                buttonStyle= {{backgroundColor: Themes.COLORS.ERROR}}
+                            />
+                        </View>
                     </View>
-                    <View style = {{flex:1}}>
-                        <Button 
-                            title= '>'
-                            buttonStyle= {{width: '50%', backgroundColor: Themes.COLORS.PRIMARY}}
-                        />
-                    </View>
+                    
                 </View>
             </ListItem.Content>
         </ListItem>
@@ -69,7 +90,7 @@ const CartScreen = () => {
         <View style={styles.container}>
             <View style = {styles.cartListContainer}>
                  <FlatList
-                    data={data}
+                    data={basket}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={cartItem}
                 />
