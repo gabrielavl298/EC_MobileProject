@@ -9,11 +9,11 @@ export const actionTypes = {
     ADD_ONE_TO_BASKET: "ADD_ONE_TO_BASKET", //Add product counter by one
     REMOVE_ONE_TO_BASKET: "REMOVE_ONE_TO_BASKET", //Quit product counter by one
     SET_QUANTITY_TO_BASKET : "SET_QUANTITY_TO_BASKET", //Set the quantity of a product
+    SET_ENABLE_TO_BASKET : "SET_ENABLE_TO_BASKET", //Set if product is enabled to checkout
 
 }
 
 const reducer = (state, action) => {
-    console.log(action);
     let index;
     let newBasket;
     switch(action.type){
@@ -41,7 +41,6 @@ const reducer = (state, action) => {
             index = state.basket.findIndex(basketItem => basketItem.id === action.id);
             newBasket = [...state.basket];
             newBasket[index].cantidad++;
-            console.log("Basket updated", newBasket[index].cantidad)
 
             return {
                 ...state,
@@ -49,32 +48,38 @@ const reducer = (state, action) => {
             }
 
         case "REMOVE_ONE_TO_BASKET":
-        index = state.basket.findIndex(basketItem => basketItem.id === action.id);
-        newBasket = [...state.basket];
-        if(newBasket[index].cantidad > 1){
-            newBasket[index].cantidad--;
-        }else{
-            newBasket[index].cantidad = 1;
-        }
-        
-        console.log("Basket updated", newBasket[index].cantidad)
+            index = state.basket.findIndex(basketItem => basketItem.id === action.id);
+            newBasket = [...state.basket];
+            if(newBasket[index].cantidad > 1){
+                newBasket[index].cantidad--;
+            }else{
+                newBasket[index].cantidad = 1;
+            }
 
-        return {
-            ...state,
-             basket: newBasket
-        }
+            return {
+                ...state,
+                basket: newBasket
+            }
 
         case "SET_QUANTITY_TO_BASKET":
-        index = state.basket.findIndex(basketItem => basketItem.id === action.id);
-        newBasket = [...state.basket];
-        console.log("action: ", action);
-        newBasket[index].cantidad = action.cantidad;
-        console.log("Basket updated", newBasket[index].cantidad)
+            index = state.basket.findIndex(basketItem => basketItem.id === action.id);
+            newBasket = [...state.basket];
+            newBasket[index].cantidad = action.cantidad;
 
-        return {
-            ...state,
-             basket: newBasket
-        }
+            return {
+                ...state,
+                basket: newBasket
+            }
+
+        case "SET_ENABLE_TO_BASKET":
+            index = state.basket.findIndex(basketItem => basketItem.id === action.id);
+            newBasket = [...state.basket];
+            newBasket[index].habilitado = action.habilitado;
+
+            return {
+                ...state,
+                basket: newBasket
+            }
 
         default: return state;
     }

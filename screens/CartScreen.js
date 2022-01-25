@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { StyleSheet, View, Image, ScrollView, Alert, FlatList } from 'react-native'
+import { StyleSheet, View, Image, ScrollView, Alert, FlatList, Switch } from 'react-native'
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {colors, Input, Button, Text, ListItem, Avatar} from 'react-native-elements'
@@ -12,7 +12,7 @@ import { actionTypes } from '../utils/Reducer';
 
 const CartScreen = () => {
     const [isLoading, setLoading] = useState(true);
-    const [data, setData] = useState([]);
+    const [total, setTotal] = useState(0);
 
     const [{basket}, dispatch] = useStateValue();
 
@@ -51,10 +51,27 @@ const CartScreen = () => {
         cantidad: quantity
     })}
 
+    const setEnable = (id, enable) => {
+        //setIsEnabled(previousState => !previousState);
+        dispatch({
+            type: actionTypes.SET_ENABLE_TO_BASKET,
+            id: id,
+            habilitado: enable
+        })
+    }
+
     useEffect(() => {
-        //getMovies();
-        console.log("Basket data:", basket);
-    }, []);
+        let total = 0;
+        basket.forEach(product => {
+            if(product.habilitado) total += product.precio * product.cantidad;
+        });
+
+        setTotal(total);
+      return () => {
+          //Clean up
+      };
+    }, [basket]);
+    
 
 
     const cartItem = ({ item, index }) => (
@@ -99,18 +116,31 @@ const CartScreen = () => {
                             />
                         </View>
                     </View>
-                    <View style = {{flex:1, alignItems:'center', justifyContent: 'center'}}>
-                        <View>
-                            <Button 
-                                icon = {{
-                                    name: 'trash',
-                                    type: 'font-awesome',
-                                    size: 15,
-                                    color: 'white',
-                                }}
-                                buttonStyle= {{backgroundColor: Themes.COLORS.ERROR}}
-                                onPress={() => removeItem(item.id)}
-                            />
+                    <View style = {{flex:1, flexDirection:'row', alignItems:'center', justifyContent: 'center'}}>
+                        <View style = {{flex:1}}>
+                           <View style = {{width: '50%', alignSelf: 'center'}}>
+                                <Button 
+                                    icon = {{
+                                        name: 'trash',
+                                        type: 'font-awesome',
+                                        size: 15,
+                                        color: 'white',
+                                    }}
+                                    buttonStyle= {{backgroundColor: Themes.COLORS.ERROR}}
+                                    onPress={() => removeItem(item.id)}
+                                />
+                           </View>
+                        </View>
+                        <View style = {{flex:1}}>
+                            <View style = {{alignSelf: 'center'}}>
+                                <Switch
+                                    trackColor={{ false: Themes.COLORS.SWITCH_OFF_TRACK, true: Themes.COLORS.SWITCH_ON_TRACK}}
+                                    thumbColor={item.habilitado ? Themes.COLORS.SWITCH_ON_THUMB : Themes.COLORS.SWITCH_OFF_THUMB}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={(e) => setEnable(item.id, e)}
+                                    value = {item.habilitado}
+                                />
+                            </View>
                         </View>
                     </View>
                     
@@ -130,7 +160,7 @@ const CartScreen = () => {
             </View>
             <View style= {styles.bootomContainer}>
                 <View style= {{flex:1, justifyContent:'center'}}>
-                    <Text style= {{ fontSize: 20}}> TOTAL: <Text style={{color: Themes.COLORS.SUCCESS}}>$ </Text></Text>
+                    <Text style= {{ fontSize: 20}}> TOTAL: <Text style={{color: Themes.COLORS.SUCCESS}}>$ {total}</Text></Text>
                 </View>
                 <View style= {{flex:1, justifyContent:'center'}}>
                     <Button 
