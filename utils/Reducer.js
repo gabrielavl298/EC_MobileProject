@@ -18,9 +18,16 @@ const reducer = (state, action) => {
     let newBasket;
     switch(action.type){
         case "ADD_TO_BASKET":
+            index = state.basket.findIndex(basketItem => basketItem.id === action.item.id);
+            newBasket = [...state.basket];
+            if(index >= 0 ){
+                newBasket[index].cantidad++;
+            }else{
+                newBasket = [...state.basket, action.item];
+            }
             return {
                 ...state,
-                basket: [...state.basket, action.item]
+                basket: newBasket
             }
         
         case "REMOVE_FROM_BASKET":
