@@ -16,7 +16,7 @@ const DrawerNav = () => {
         <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/> }
             screenOptions={{
                 drawerStyle: {
-                backgroundColor: Themes.COLORS.PRIMARY,
+                backgroundColor: Themes.COLORS.SECONDARY,
                 width: 240,
                 },
             }}
