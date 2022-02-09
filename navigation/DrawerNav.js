@@ -54,6 +54,5 @@ const DrawerNav = () => {
 export default DrawerNav
 
 const styles = StyleSheet.create({
-    drawerStyle: {
-    }
+    
 })

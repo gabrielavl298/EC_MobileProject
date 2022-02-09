@@ -9,8 +9,9 @@ import Themes from '../constants/Themes'
 //Utils
 import { useStateValue } from '../utils/StateProvider';
 import { actionTypes } from '../utils/Reducer';
+import { NavigationContainer } from '@react-navigation/native';
 
-const CartScreen = () => {
+const CartScreen = ({navigation}) => {
     const [isLoading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
 
@@ -61,6 +62,7 @@ const CartScreen = () => {
     }
 
     useEffect(() => {
+        console.log(navigation);
         let total = 0;
         basket.forEach(product => {
             if(product.habilitado) total += product.precio * product.cantidad;
@@ -166,7 +168,7 @@ const CartScreen = () => {
                     <Button 
                         title='Checkout >'
                         buttonStyle = {{backgroundColor: Themes.COLORS.PRIMARY}}
-
+                        onPress = {() => navigation.navigate("CheckoutScreen")}
                     />
                 </View>
             </View>
