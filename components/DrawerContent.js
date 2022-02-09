@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, View } from 'react-native'
 import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 
@@ -17,8 +17,16 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 const auth = getAuth();*/
 
 const DrawerContent = (props) => {
-
+  const navigation = props.navigation;
   const [auth, isAuth] = useState(false);
+
+  useEffect(() => {
+    console.log('props', props);
+    return () => {
+
+    };
+  }, []);
+  
 
    function LogOut(){
          /*signOut(auth).then(() => {
@@ -65,7 +73,7 @@ const DrawerContent = (props) => {
                 type='clear'
                 title='SIGN IN' 
                 titleStyle={{ color: 'white', fontSize: 13, textDecorationLine: 'underline'}}
-                onPress = {() => {}}
+                onPress = {() => {props.navigation.navigate('LoginStack', { screen: 'Login'})}}
                 />
             </View>
             <View>
@@ -78,7 +86,7 @@ const DrawerContent = (props) => {
                 }}
                 title='SIGN UP' 
                 titleStyle={{ color: 'white', fontSize: 13}}
-                onPress = {() => {}}
+                onPress = {() => {props.navigation.navigate('LoginStack', {screen: 'CreateAccount'})}}
                 />
             </View>
           </View>

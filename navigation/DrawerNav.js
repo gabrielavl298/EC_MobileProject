@@ -8,12 +8,14 @@ import Themes from '../constants/Themes';
 
 import HomeStack from './HomeStack';
 import CheckoutStack from './CheckoutStack';
+import LoginStack from './LoginStack';
+import { withTheme } from 'react-native-elements';
 
 const Drawer = createDrawerNavigator();
 
 const DrawerNav = () => {
     return (
-        <Drawer.Navigator drawerContent={props => <DrawerContent {...props}/> }
+        <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props}/> }
             screenOptions={{
                 drawerStyle: {
                 backgroundColor: Themes.COLORS.SECONDARY,
@@ -25,20 +27,33 @@ const DrawerNav = () => {
                 options={{
                     title: 'Home', 
                     drawerLabel: 'Home',
-                    
+                    drawerActiveTintColor: Themes.COLORS.DRAWER.SELECT_TXT,
+                    drawerActiveBackgroundColor: Themes.COLORS.DRAWER.SELECT_BG
                 }} 
             />
             <Drawer.Screen name="CheckoutStack" component={CheckoutStack}  
                 options={{
                     title: 'My Cart',
-                    headerShown: false
+                    headerShown: false,
+                    drawerActiveTintColor: Themes.COLORS.DRAWER.SELECT_TXT,
+                    drawerActiveBackgroundColor: Themes.COLORS.DRAWER.SELECT_BG
                     }}
             />
             
+            <Drawer.Screen name="LoginStack" component={LoginStack}
+                options={{
+                    headerShown: false,
+                    drawerItemStyle: {height: 0}
+                }}
+            />
+
         </Drawer.Navigator>
     )
 }
 
 export default DrawerNav
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    drawerStyle: {
+    }
+})

@@ -11,6 +11,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 //Stacks
 import DrawerNav from './navigation/DrawerNav';
+import LoginStack from './navigation/LoginStack';
 
 //utils
 import { StateProvider } from './utils/StateProvider';

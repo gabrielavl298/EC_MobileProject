@@ -29,6 +29,10 @@ export default{
         BLOCK: '#E7E7E7',
         ICON1: '#852196',
         ICON2: '#4A4A4A',
+        DRAWER:{
+          SELECT_BG: '#FFFFFF',
+          SELECT_TXT: '9C26B0',
+        },
         OTHER:{
           GOOGLEBTN: '#DD4B39'
         }
