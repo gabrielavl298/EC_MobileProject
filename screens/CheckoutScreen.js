@@ -9,6 +9,7 @@ const CheckoutScreen = () => {
     const [showGateway, setShowGateway] = useState(false);
     const [prog, setProg] = useState(false);
     const [progClr, setProgClr] = useState('#000');
+
     return (
         <SafeAreaView style={{flex: 1}}>
         <View style={styles.container}>
@@ -48,7 +49,7 @@ const CheckoutScreen = () => {
                 </View>
                 </View>
                 <WebView
-                source={{uri: 'https://www.google.com'}}
+                source={{uri: 'https://et-web-77045.web.app/'}}
                 style={{flex: 1}}
                 onLoadStart={() => {
                     setProg(true);
