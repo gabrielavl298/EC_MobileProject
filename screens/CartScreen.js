@@ -17,6 +17,8 @@ const CartScreen = ({navigation}) => {
 
     const [{basket}, dispatch] = useStateValue();
 
+    let enabledProducts = {};
+
     const getMovies = async () => {
         try {
         const response = await fetch('https://reactnative.dev/movies.json');
@@ -62,12 +64,15 @@ const CartScreen = ({navigation}) => {
     }
 
     useEffect(() => {
-        console.log(navigation);
         let total = 0;
         basket.forEach(product => {
-            if(product.habilitado) total += product.precio * product.cantidad;
+            if(product.habilitado){
+                total += product.precio * product.cantidad;
+                Object.assign(enabledProducts, product);
+            } 
         });
-
+        console.log("new object variable: ", enabledProducts)
+        
         setTotal(total);
       return () => {
           //Clean up

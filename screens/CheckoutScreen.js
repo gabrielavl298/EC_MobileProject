@@ -10,67 +10,84 @@ const CheckoutScreen = () => {
     const [prog, setProg] = useState(false);
     const [progClr, setProgClr] = useState('#000');
 
-    return (
+    function onMessage(e) {
+        let data = e.nativeEvent.data;
+        setShowGateway(false);
+        let payment = JSON.parse(data);
+        if (payment.status === 'COMPLETED') {
+          alert('PAYMENT MADE SUCCESSFULLY!');
+        } else {
+          alert('PAYMENT FAILED. PLEASE TRY AGAIN.');
+        }
+      }
+
+      return (
         <SafeAreaView style={{flex: 1}}>
-        <View style={styles.container}>
+          <View style={styles.container}>
             <View style={styles.btnCon}>
-            <TouchableOpacity
+              <TouchableOpacity
                 style={styles.btn}
                 onPress={() => setShowGateway(true)}>
                 <Text style={styles.btnTxt}>Pay Using PayPal</Text>
-            </TouchableOpacity>
+              </TouchableOpacity>
             </View>
-        </View>
-        {showGateway ? (
+          </View>
+          {showGateway ? (
             <Modal
-            visible={showGateway}
-            onDismiss={() => setShowGateway(false)}
-            onRequestClose={() => setShowGateway(false)}
-            animationType={"fade"}
-            transparent>
-            <View style={styles.webViewCon}>
+              visible={showGateway}
+              onDismiss={() => setShowGateway(false)}
+              onRequestClose={() => setShowGateway(false)}
+              animationType={'fade'}
+              transparent>
+              <View style={styles.webViewCon}>
                 <View style={styles.wbHead}>
-                <TouchableOpacity
+                  <TouchableOpacity
                     style={{padding: 13}}
                     onPress={() => setShowGateway(false)}>
-                </TouchableOpacity>
-                <Text
+                  </TouchableOpacity>
+                  <Text
                     style={{
-                    flex: 1,
-                    textAlign: 'center',
-                    fontSize: 16,
-                    fontWeight: 'bold',
-                    color: '#00457C',
+                      flex: 1,
+                      textAlign: 'center',
+                      fontSize: 16,
+                      fontWeight: 'bold',
+                      color: '#00457C',
                     }}>
                     PayPal GateWay
-                </Text>
-                <View style={{padding: 13, opacity: prog ? 1 : 0}}>
+                  </Text>
+                  <View style={{padding: 13, opacity: prog ? 1 : 0}}>
                     <ActivityIndicator size={24} color={progClr} />
-                </View>
+                  </View>
                 </View>
                 <WebView
-                source={{uri: 'https://et-web-77045.web.app/'}}
-                style={{flex: 1}}
-                onLoadStart={() => {
+                  source={{uri: 'https://my-pay-web.web.app/'}}
+                  style={{flex: 1}}
+                  onLoadStart={() => {
                     setProg(true);
                     setProgClr('#000');
-                }}
-                onLoadProgress={() => {
+                  }}
+                  onLoadProgress={() => {
                     setProg(true);
                     setProgClr('#00457C');
-                }}
-                onLoadEnd={() => {
+                  }}
+                  onLoadEnd={() => {
                     setProg(false);
-                }}
-                onLoad={() => {
+                  }}
+                  onLoad={() => {
                     setProg(false);
-                }}
+                  }}
+                  onMessage={onMessage}
+                  nativeConfig = {{
+                    props: {
+                      items: {}
+                    }
+                  }}
                 />
-            </View>
+              </View>
             </Modal>
-        ) : null}
-    </SafeAreaView>
-  );
+          ) : null}
+        </SafeAreaView>
+      );
 };
 
 export default CheckoutScreen
