@@ -16,8 +16,7 @@ const CartScreen = ({navigation}) => {
     const [total, setTotal] = useState(0);
 
     const [{basket}, dispatch] = useStateValue();
-
-    let enabledProducts = {};
+    const [enProducts, setEnProducts] = useState([])
 
     const getMovies = async () => {
         try {
@@ -64,14 +63,16 @@ const CartScreen = ({navigation}) => {
     }
 
     useEffect(() => {
+        let enabledProducts = [];
         let total = 0;
         basket.forEach(product => {
             if(product.habilitado){
                 total += product.precio * product.cantidad;
-                Object.assign(enabledProducts, product);
+                enabledProducts.push(product);
             } 
         });
-        console.log("new object variable: ", enabledProducts)
+        setEnProducts(enabledProducts);
+        console.log("new object variable: ", enProducts)
         
         setTotal(total);
       return () => {
@@ -173,7 +174,7 @@ const CartScreen = ({navigation}) => {
                     <Button 
                         title='Checkout >'
                         buttonStyle = {{backgroundColor: Themes.COLORS.PRIMARY}}
-                        onPress = {() => navigation.navigate("CheckoutScreen")}
+                        onPress = {() => navigation.navigate("CheckoutScreen", {items: enProducts, total: total})}
                     />
                 </View>
             </View>

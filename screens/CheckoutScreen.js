@@ -3,12 +3,47 @@ import { StyleSheet, Text, View, TouchableOpacity, Modal, ActivityIndicator, Saf
 import { Button } from 'react-native-elements';
 import { WebView } from 'react-native-webview';
 
+import { item, purchaseUnit } from '../models/CheckoutModels'; 
+
 //Aux
 import Themes from '../constants/Themes';
-const CheckoutScreen = () => {
+const CheckoutScreen = (props) => {
     const [showGateway, setShowGateway] = useState(false);
     const [prog, setProg] = useState(false);
     const [progClr, setProgClr] = useState('#000');
+    const [finalPurchase, setFinalPurchase] = useState({})
+
+    let cartData = props.route.params;
+
+    const url = "https://et-web-77045.web.app"
+
+    /*const jsCode = `document.body.style.backgroundColor = 'red';
+    setTimeout(function() { window.alert('hi') }, 2000);
+    true;`;*/
+
+      function injectedToHtml() {
+      let injectedData = `document.getElementById('fname').value = '${finalPurchase}';`;
+      return injectedData;
+     }
+  
+
+    useEffect(() => {
+      let items = [];
+      cartData.items.forEach(product => {
+        let itemToBuy = new item(product.nombre, product.descripcion,
+          product.precio, product.cantidad);
+
+          items.push(itemToBuy.itemData);
+      });
+
+      let newPurchaseUnit = new purchaseUnit(cartData.total, items);
+      setFinalPurchase(newPurchaseUnit.unit);
+      console.log("Compra a realizar let: ", finalPurchase);
+
+      return () => {
+        
+      }
+    }, [])
 
     function onMessage(e) {
         let data = e.nativeEvent.data;
@@ -60,7 +95,9 @@ const CheckoutScreen = () => {
                   </View>
                 </View>
                 <WebView
-                  source={{uri: 'https://my-pay-web.web.app/'}}
+                  javaScriptEnabled={true}
+                  domStorageEnabled={true}
+                  source={{uri: url}}
                   style={{flex: 1}}
                   onLoadStart={() => {
                     setProg(true);
@@ -82,6 +119,12 @@ const CheckoutScreen = () => {
                       items: {}
                     }
                   }}
+
+                  injectedJavaScript = {
+                    injectedToHtml()
+                    //SetOrderInfo(finalPurchase)
+
+                  }
                 />
               </View>
             </Modal>
