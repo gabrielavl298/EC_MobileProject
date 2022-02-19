@@ -22,9 +22,18 @@ const CheckoutScreen = (props) => {
     true;`;*/
 
       function injectedToHtml() {
-      let injectedData = `document.getElementById('fname').value = '${finalPurchase}';`;
+      let injectedData = `document.getElementById('items').value = '${JSON.stringify(finalPurchase)}'
+      alert(document.getElementById('items').value);
+      let example = 0;
+      true;`;
+      //this.webViewApp.injectJavaScript(`SetOrderInfo(${finalPurchase})`)
       return injectedData;
      }
+
+     const runFirst = `
+      window.isNativeApp = true;
+      true; // note: this is required, or you'll sometimes get silent failures
+    `;
   
 
     useEffect(() => {
@@ -53,6 +62,7 @@ const CheckoutScreen = (props) => {
           alert('PAYMENT MADE SUCCESSFULLY!');
         } else {
           alert('PAYMENT FAILED. PLEASE TRY AGAIN.');
+          console.log(payment.order)
         }
       }
 
@@ -114,17 +124,14 @@ const CheckoutScreen = (props) => {
                     setProg(false);
                   }}
                   onMessage={onMessage}
+                  
                   nativeConfig = {{
                     props: {
                       items: {}
                     }
                   }}
-
-                  injectedJavaScript = {
-                    injectedToHtml()
-                    //SetOrderInfo(finalPurchase)
-
-                  }
+                  injectedJavaScript ={injectedToHtml()}
+                  injectedJavaScriptBeforeContentLoaded={runFirst}
                 />
               </View>
             </Modal>
