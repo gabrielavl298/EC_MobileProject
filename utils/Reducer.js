@@ -1,5 +1,9 @@
 export const initialState = {
-    basket: []
+    basket: [],
+    user: {
+        auth: false,
+        userID: undefined
+    }
 }
 
 //Action for cart
@@ -11,6 +15,12 @@ export const actionTypes = {
     SET_QUANTITY_TO_BASKET : "SET_QUANTITY_TO_BASKET", //Set the quantity of a product
     SET_ENABLE_TO_BASKET : "SET_ENABLE_TO_BASKET", //Set if product is enabled to checkout
 
+}
+
+//Action for Auth
+export const authActionTypes = {
+    AUTH_USER: "AUTH_USER",
+    LOGOUT_USER: "LOGOUT_USER"
 }
 
 const reducer = (state, action) => {
@@ -88,6 +98,24 @@ const reducer = (state, action) => {
                 basket: newBasket
             }
 
+        /* AUTH CASES */
+        case "AUTH_USER":
+            return {
+                ...state,
+                user: {
+                    auth: true,
+                    userID: action.userID
+                }
+             }
+
+        case "LOGOUT_USER":
+            return {
+                ...state,
+                user: {
+                    auth: false,
+                    userID: undefined
+                }
+            }
         default: return state;
     }
 }

@@ -1,6 +1,6 @@
 import {initializeApp} from 'firebase/app';
 import {getFirestore, collection, getDocs} from 'firebase/firestore'
-//import { getAuth } from 'firebase/auth'
+import { getAuth } from 'firebase/auth'
 
 
 const firebaseConfig = {
@@ -14,6 +14,6 @@ const firebaseConfig = {
 
   export const firebaseapp = initializeApp(firebaseConfig);
   export const db = getFirestore(firebaseapp);
-  //export const auth = getAuth(firebaseapp);
+  export const auth = getAuth(firebaseapp);
 
   export const productDocs = async () => await getDocs(collection(db, 'productoInfo'));

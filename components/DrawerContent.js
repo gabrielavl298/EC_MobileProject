@@ -12,6 +12,10 @@ import Themes from '../constants/Themes'
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+
+//Utils
+import { useStateValue } from '../utils/StateProvider';
+
 /*import { getAuth, signOut } from "firebase/auth";
 
 const auth = getAuth();*/
@@ -19,13 +23,14 @@ const auth = getAuth();*/
 const DrawerContent = (props) => {
   const navigation = props.navigation;
   const [auth, isAuth] = useState(false);
+  const [{user}, dispatch] = useStateValue();
 
   useEffect(() => {
-    console.log('props', props);
+    isAuth(user.auth)
     return () => {
 
     };
-  }, []);
+  }, [user]);
   
 
    function LogOut(){

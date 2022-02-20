@@ -17,7 +17,6 @@ import LoginStack from './navigation/LoginStack';
 import { StateProvider } from './utils/StateProvider';
 import reducer, { initialState } from './utils/Reducer';
 
-
 const Stack = createNativeStackNavigator();
 export default function App() {
   

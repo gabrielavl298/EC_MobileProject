@@ -11,9 +11,15 @@ import CheckoutStack from './CheckoutStack';
 import LoginStack from './LoginStack';
 import { withTheme } from 'react-native-elements';
 
+//Utils
+import { useStateValue } from '../utils/StateProvider';
+
 const Drawer = createDrawerNavigator();
 
 const DrawerNav = () => {
+
+    const [{user}, dispatch] = useStateValue();
+
     return (
         <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props}/> }
             screenOptions={{
@@ -40,12 +46,17 @@ const DrawerNav = () => {
                     }}
             />
             
-            <Drawer.Screen name="LoginStack" component={LoginStack}
-                options={{
-                    headerShown: false,
-                    drawerItemStyle: {height: 0}
-                }}
-            />
+            { user.auth ? null :
+                (
+                    <Drawer.Screen name="LoginStack" component={LoginStack}
+                        options={{
+                            headerShown: false,
+                            drawerItemStyle: {height: 0}
+                        }}
+                    />
+                )
+            }
+            
 
         </Drawer.Navigator>
     )

@@ -7,9 +7,14 @@ import {colors, Input, Button} from 'react-native-elements'
 import Themes from '../constants/Themes'
 import { color } from 'react-native-elements/dist/helpers';
 
-//import { auth } from '../config/cFirebase'
-//import {signInWithEmailAndPassword} from 'firebase/auth'
+import { auth } from '../config/cFirebase'
+import {signInWithEmailAndPassword} from 'firebase/auth'
 //import { ThemeProvider } from '@react-navigation/native';
+
+//Utils
+//Uitls
+import { authActionTypes } from '../utils/Reducer';
+import { useStateValue } from '../utils/StateProvider';
 
 const LoginScreen = ({ navigation }) => {
 
@@ -19,13 +24,24 @@ const LoginScreen = ({ navigation }) => {
     const [emailError, setEmailError] = useState("false");
     const [notFoundError, setNotFoundError] = useState("false");
 
+    const [{user}, dispatch] = useStateValue();
+
     async function LogIn(){
-        /*await signInWithEmailAndPassword(auth, email, password)
+        await signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
             console.log(user);
             setEmailError(false);
+
+            dispatch({
+                type: authActionTypes.AUTH_USER,
+                user: {
+                    auth: true,
+                    userID: user
+                }
+            });
+
             // ...
         })
         .catch((error) => {
@@ -42,8 +58,16 @@ const LoginScreen = ({ navigation }) => {
                     setNotFoundError(true);
             }
         });
-        */
     }
+
+    useEffect(() => {
+    console.log(user);
+    
+      return () => {
+        
+      }
+    }, [user])
+    
 
     return (
         <ScrollView style = {styles.container}>
