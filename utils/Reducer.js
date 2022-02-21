@@ -102,7 +102,6 @@ const reducer = (state, action) => {
 
         /* AUTH CASES */
         case "AUTH_USER":
-            console.log("Valores recibidos: ", action)
             return {
                 ...state,
                 user: {

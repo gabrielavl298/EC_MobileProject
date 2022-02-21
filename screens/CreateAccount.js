@@ -9,7 +9,7 @@ import { color } from 'react-native-elements/dist/helpers';
 
 //Firebase
 import { auth, db } from '../config/cFirebase';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile  } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
 
 //Models
@@ -30,21 +30,23 @@ const CreateAccount = ({ navigation }) => {
     const [{user}, dispatch] = useStateValue();
 
 
-    /*const userCreated = auth().currentUser;
-            console.log("user just created: ", userCreated);
-            userCreated.updateProfile(userCredential.user, {
-                displayName: username
-            }); */
+    /*  */
     async function RegisterUser(){
         await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in
             
-            console.log("User credentials: ", userCredential.user)
+            //console.log("User credentials: ", userCredential.user)
+            
+            const userCreated = auth.currentUser;
+            updateProfile(userCreated, {
+                displayName: username
+            });
+            console.log("user just created: ", userCreated);
 
-            const userID = userCredential.user.uid;
+            let userID = userCredential.user.uid;
             let newUser = new UserAccount(username, phone, email, userID);
-            console.log(newUser.account);
+            //console.log(newUser.account);
             WriteInDB(newUser.account);
 
             dispatch({
@@ -55,7 +57,7 @@ const CreateAccount = ({ navigation }) => {
                     username: username
                 }
             });
-            console.log(user);
+            //console.log(user);
         })
         .catch((error) => {
             const errorCode = error.code;
