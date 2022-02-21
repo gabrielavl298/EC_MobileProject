@@ -31,13 +31,12 @@ const LoginScreen = ({ navigation }) => {
         .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
-            console.log(user);
+            console.log("User logged: ", user);
             setEmailError(false);
 
             dispatch({
                 type: authActionTypes.AUTH_USER,
                 user: {
-                    auth: true,
                     userID: user
                 }
             });
@@ -59,14 +58,6 @@ const LoginScreen = ({ navigation }) => {
             }
         });
     }
-
-    useEffect(() => {
-    console.log(user);
-    
-      return () => {
-        
-      }
-    }, [user])
     
 
     return (

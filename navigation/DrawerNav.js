@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { createDrawerNavigator} from '@react-navigation/drawer';
 
@@ -11,7 +11,11 @@ import CheckoutStack from './CheckoutStack';
 import LoginStack from './LoginStack';
 import { withTheme } from 'react-native-elements';
 
+//Firebase
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+
 //Utils
+import { authActionTypes } from '../utils/Reducer';
 import { useStateValue } from '../utils/StateProvider';
 
 const Drawer = createDrawerNavigator();
@@ -19,6 +23,36 @@ const Drawer = createDrawerNavigator();
 const DrawerNav = () => {
 
     const [{user}, dispatch] = useStateValue();
+
+    const auth = getAuth();
+
+    /*
+    onAuthStateChanged(auth, (user) => {
+            if (user) {
+            const uid = user.uid;
+            dispatch({
+                type: authActionTypes.AUTH_USER,
+                user: {
+                    userID: uid
+                }
+            });
+
+            // ...
+            } else {
+                dispatch({
+                    type: authActionTypes.LOGOUT_USER,
+                });
+            }
+        });
+    */
+    useEffect(() => {
+        
+    
+      return () => {
+        
+      }
+    }, [user])
+    
 
     return (
         <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props}/> }

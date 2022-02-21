@@ -14,13 +14,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 //Utils
+import { authActionTypes } from '../utils/Reducer';
 import { useStateValue } from '../utils/StateProvider';
 
-/*import { getAuth, signOut } from "firebase/auth";
-
-const auth = getAuth();*/
+import { getAuth, signOut } from "firebase/auth";
 
 const DrawerContent = (props) => {
+  const authInstance = getAuth();
+
   const navigation = props.navigation;
   const [auth, isAuth] = useState(false);
   const [{user}, dispatch] = useStateValue();
@@ -34,11 +35,14 @@ const DrawerContent = (props) => {
   
 
    function LogOut(){
-         /*signOut(auth).then(() => {
+         signOut(authInstance).then(() => {
             // Sign-out successful.
+            dispatch({
+              type: authActionTypes.LOGOUT_USER,
+            });
           }).catch((error) => {
             // An error happened.
-          }); */         
+          });         
     }
 
     const renderUser = () => (
