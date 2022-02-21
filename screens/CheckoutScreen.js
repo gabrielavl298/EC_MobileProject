@@ -23,7 +23,6 @@ const CheckoutScreen = (props) => {
 
       function injectedToHtml() {
       let injectedData = `document.getElementById('items').value = '${JSON.stringify(finalPurchase)}'
-      alert(document.getElementById('items').value);
       let example = 0;
       true;`;
       //this.webViewApp.injectJavaScript(`SetOrderInfo(${finalPurchase})`)

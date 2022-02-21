@@ -7,31 +7,62 @@ import {colors, Input, Button} from 'react-native-elements'
 import Themes from '../constants/Themes'
 import { color } from 'react-native-elements/dist/helpers';
 
-//import { auth } from '../config/cFirebase';
-//import { createUserWithEmailAndPassword } from "firebase/auth";
+//Firebase
+import { auth, db } from '../config/cFirebase';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { collection, addDoc } from "firebase/firestore";
+
+//Models
+import {UserAccount} from "../models/UserAccountModel"
+
+//Utils
+import { authActionTypes } from '../utils/Reducer';
+import { useStateValue } from '../utils/StateProvider';
 
 const CreateAccount = ({ navigation }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
 
+    const [username, setUsername] = useState('')
+    const [phone, setPhone] = useState('')
+
+    const [{user}, dispatch] = useStateValue();
+
 
     async function RegisterUser(){
-        /*await createUserWithEmailAndPassword(auth, email, password)
+        await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in
-            const user = userCredential.user;
+            const userID = userCredential.user.uid;
+            let newUser = new UserAccount(username, phone, email, userID);
+            console.log(newUser.account);
+            WriteInDB(newUser.account);
+
+            dispatch({
+                type: authActionTypes.AUTH_USER,
+                user: {
+                    userID: userID
+                }
+            });
             console.log(user);
-            // ...
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.log(errorCode);
-            // ..
+            console.log(errorCode);        
         });
-        */
     }
+
+    async function WriteInDB(userData){
+        try {
+            const docRef = await addDoc(collection(db, "cuentas"), userData);
+            console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+    }
+
     return (
         <ScrollView  style = {styles.container}>
             <View style= {{flex: 1, alignItems: 'center', justifyContent: 'center'}} >
@@ -50,6 +81,7 @@ const CreateAccount = ({ navigation }) => {
                                 color= {Themes.COLORS.ICON1}
                             />}
                             autoCompleteType = 'off'
+                            onChange = {(e) => setUsername(e.nativeEvent.text)}
                         />
                     </View>
                     <View>
@@ -62,6 +94,7 @@ const CreateAccount = ({ navigation }) => {
                                 color= {Themes.COLORS.ICON1}
                             />}
                             autoCompleteType = 'off'
+                            onChange = {(e) => setPhone(e.nativeEvent.text)}
                         />
                     </View>
                     <View>

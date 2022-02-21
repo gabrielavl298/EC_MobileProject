@@ -36,12 +36,11 @@ const DrawerContent = (props) => {
 
    function LogOut(){
          signOut(authInstance).then(() => {
-            // Sign-out successful.
             dispatch({
               type: authActionTypes.LOGOUT_USER,
             });
           }).catch((error) => {
-            // An error happened.
+            console.log("Sign out error: ",  error);
           });         
     }
 
