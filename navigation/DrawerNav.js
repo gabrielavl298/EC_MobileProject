@@ -46,10 +46,7 @@ const DrawerNav = () => {
         });
     */
     useEffect(() => {
-        
-    
       return () => {
-        
       }
     }, [user])
     

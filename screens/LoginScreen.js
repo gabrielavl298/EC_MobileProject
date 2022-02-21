@@ -7,8 +7,10 @@ import {colors, Input, Button} from 'react-native-elements'
 import Themes from '../constants/Themes'
 import { color } from 'react-native-elements/dist/helpers';
 
-import { auth } from '../config/cFirebase'
+//Firebase
+import { auth, db } from '../config/cFirebase'
 import {signInWithEmailAndPassword} from 'firebase/auth'
+import { collection, getDoc, doc } from "firebase/firestore";
 //import { ThemeProvider } from '@react-navigation/native';
 
 //Utils
@@ -30,17 +32,19 @@ const LoginScreen = ({ navigation }) => {
         await signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in
-            const user = userCredential.user;
-            console.log("User logged: ", user);
+            const userData = userCredential;
+            //GetUserData(userData.user);
+            console.log("User logged: ", userData);
             setEmailError(false);
 
             dispatch({
                 type: authActionTypes.AUTH_USER,
                 user: {
-                    userID: user
+                    userID: userData.user.uid,
+                    email: userData.user.email,
+                    username: userData.user.displayName
                 }
             });
-
             // ...
         })
         .catch((error) => {
@@ -57,6 +61,20 @@ const LoginScreen = ({ navigation }) => {
                     setNotFoundError(true);
             }
         });
+    }
+
+    async function GetUserData(userID){
+        let found = false;
+        const docRef = doc(db, "cities", userID);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+            found = true;
+        } else {
+        // doc.data() will be undefined in this case
+            console.log("No such document!");
+        }
     }
     
 

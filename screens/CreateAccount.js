@@ -30,10 +30,18 @@ const CreateAccount = ({ navigation }) => {
     const [{user}, dispatch] = useStateValue();
 
 
+    /*const userCreated = auth().currentUser;
+            console.log("user just created: ", userCreated);
+            userCreated.updateProfile(userCredential.user, {
+                displayName: username
+            }); */
     async function RegisterUser(){
         await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in
+            
+            console.log("User credentials: ", userCredential.user)
+
             const userID = userCredential.user.uid;
             let newUser = new UserAccount(username, phone, email, userID);
             console.log(newUser.account);
@@ -42,7 +50,9 @@ const CreateAccount = ({ navigation }) => {
             dispatch({
                 type: authActionTypes.AUTH_USER,
                 user: {
-                    userID: userID
+                    userID: userID,
+                    email: email,
+                    username: username
                 }
             });
             console.log(user);

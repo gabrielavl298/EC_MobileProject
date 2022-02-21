@@ -2,7 +2,9 @@ export const initialState = {
     basket: [],
     user: {
         auth: false,
-        userID: undefined
+        userID: undefined,
+        email: undefined,
+        username: undefined
     }
 }
 
@@ -100,11 +102,14 @@ const reducer = (state, action) => {
 
         /* AUTH CASES */
         case "AUTH_USER":
+            console.log("Valores recibidos: ", action)
             return {
                 ...state,
                 user: {
                     auth: true,
-                    userID: action.userID
+                    userID: action.user.userID,
+                    email: action.user.email,
+                    username: action.user.username
                 }
              }
 
@@ -113,7 +118,9 @@ const reducer = (state, action) => {
                 ...state,
                 user: {
                     auth: false,
-                    userID: undefined
+                    userID: undefined,
+                    email: undefined,
+                    username: undefined
                 }
             }
         default: return state;

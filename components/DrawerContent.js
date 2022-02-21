@@ -28,6 +28,7 @@ const DrawerContent = (props) => {
 
   useEffect(() => {
     isAuth(user.auth)
+    console.log("current user (from drawer content .js)", user)
     return () => {
 
     };
@@ -55,8 +56,8 @@ const DrawerContent = (props) => {
         />
         
         <View style={{marginLeft:15, flexDirection:'column'}}>
-          <Text style={styles.title}>Gabriela</Text>
-          <Text style={styles.caption}>@gaby12</Text>
+          <Text style={styles.title}>{user.username}</Text>
+          <Text style={styles.caption}>{user.email}</Text>
         </View>
       </View>
     );
@@ -113,11 +114,15 @@ const DrawerContent = (props) => {
                     </View>
                 </View>
                 <DrawerItemList {...props} />
-                <DrawerItem
-                label ="Log out"
-                icon = {() => <Icon name="sign-out"/>}
-                onPress = {() => LogOut()}
-            />
+                
+                { auth ? 
+                  (<DrawerItem
+                    label ="Log out"
+                    icon = {() => <Icon name="sign-out"/>}
+                    onPress = {() => LogOut()}
+                  />)
+                  : null
+                }
             </DrawerContentScrollView>
         </View>
     )
