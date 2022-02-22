@@ -16,6 +16,7 @@ const CartScreen = ({navigation}) => {
     const [total, setTotal] = useState(0);
 
     const [{basket}, dispatch] = useStateValue();
+    const [{user}, dispatchUser] = useStateValue();
     const [enProducts, setEnProducts] = useState([])
 
     const getMovies = async () => {
@@ -79,7 +80,6 @@ const CartScreen = ({navigation}) => {
           //Clean up
       };
     }, [basket]);
-    
 
 
     const cartItem = ({ item, index }) => (
@@ -157,10 +157,10 @@ const CartScreen = ({navigation}) => {
         </ListItem>
     )
 
-    return (
-        <View style={styles.container}>
+    const cartView = ()  => (
+        <View>
             <View style = {styles.cartListContainer}>
-                 <FlatList
+            <FlatList
                     data={basket}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={cartItem}
@@ -180,14 +180,110 @@ const CartScreen = ({navigation}) => {
             </View>
         </View>
     )
+
+    return (
+        <View style={styles.cartContainer}>
+            {user.auth ? 
+            <View>
+                <View style = {styles.cartListContainer}>
+                <FlatList
+                        data={basket}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={cartItem}
+                    />
+                </View>
+                <View style= {styles.bootomContainer}>
+                    <View style= {{flex:1, justifyContent:'center'}}>
+                        <Text style= {{ fontSize: 20}}> TOTAL: <Text style={{color: Themes.COLORS.SUCCESS}}>$ {total}</Text></Text>
+                    </View>
+                    <View style= {{flex:1, justifyContent:'center'}}>
+                        <Button 
+                            title='Checkout >'
+                            buttonStyle = {{backgroundColor: Themes.COLORS.PRIMARY}}
+                            onPress = {() => navigation.navigate("CheckoutScreen", {items: enProducts, total: total})}
+                        />
+                    </View>
+                </View>
+            </View>
+            : 
+            <View style = {styles.cartEmptyContainer}>
+                <View>
+                    <Text>Your cart is empty</Text>
+                </View>
+                <View>
+                    <View>
+                        <Button
+                            title="Sign in"
+                            icon={{
+                                name: 'user',
+                                type: 'font-awesome',
+                                size: 15,
+                                color: 'white',
+                            }}
+                            iconRight
+                            iconContainerStyle={{ marginLeft: 10 }}
+                            titleStyle={{ fontWeight: '700' }}
+                            buttonStyle={{
+                                backgroundColor: Themes.COLORS.PRIMARY,
+                                borderColor: 'transparent',
+                                borderWidth: 0,
+                                borderRadius: 30,
+                            }}
+                            containerStyle={{
+                                width: 200,
+                                marginHorizontal: 50,
+                                marginVertical: 10,
+                            }}
+                            onPress= {() => navigation.navigate('LoginStack', { screen: 'Login'})}
+                        />
+                    </View>
+
+                    <View>
+                        <Button
+                            title="Sign up"
+                            type='outline'
+                            icon={{
+                                name: 'user',
+                                type: 'font-awesome',
+                                size: 15,
+                                color: 'white',
+                            }}
+                            iconRight
+                            iconContainerStyle={{ marginLeft: 10 }}
+                            titleStyle={{ fontWeight: '700', color: Themes.COLORS.PRIMARY}}
+                            buttonStyle={{
+                                borderColor: Themes.COLORS.PRIMARY,
+                                borderWidth: 1,
+                                borderRadius: 30,
+                            }}
+                            containerStyle={{
+                                width: 200,
+                                marginHorizontal: 50,
+                                marginVertical: 10,
+                            }}
+                            onPress= {() => navigation.navigate('LoginStack', { screen: 'CreateAccount'})}
+                        />
+                    </View>
+                </View>
+            </View>
+            }
+            
+        </View>
+    )
 }
 
 export default CartScreen
 
 const styles = StyleSheet.create({
-    container: {
+    cartContainer: {
         flex: 1,
         paddingTop:10
+    },
+    cartEmptyContainer:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+        
     },
     cartListContainer:{
 
