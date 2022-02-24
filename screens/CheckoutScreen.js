@@ -5,13 +5,28 @@ import { WebView } from 'react-native-webview';
 
 import { item, purchaseUnit } from '../models/CheckoutModels'; 
 
+//Firebase
+import { db } from '../config/cFirebase';
+import { collection, addDoc, doc, setDoc } from "firebase/firestore";
+
 //Aux
 import Themes from '../constants/Themes';
+
+//Models
+import { Order } from '../models/OrderModel';
+import { Timestamp } from 'firebase/firestore';
+
+//Utils
+import { useStateValue } from '../utils/StateProvider';
+
 const CheckoutScreen = (props) => {
     const [showGateway, setShowGateway] = useState(false);
     const [prog, setProg] = useState(false);
     const [progClr, setProgClr] = useState('#000');
-    const [finalPurchase, setFinalPurchase] = useState({})
+    const [finalPurchase, setFinalPurchase] = useState({}) //Object for paypal
+    const [itemsActive, setItemsActive] = useState([])
+
+    const [{user}, dispatchUser] = useStateValue();
 
     let cartData = props.route.params;
 
@@ -36,17 +51,26 @@ const CheckoutScreen = (props) => {
   
 
     useEffect(() => {
-      let items = [];
+      let itemsForPaypal = [];
+      let itemsActive = [];
+      
       cartData.items.forEach(product => {
         let itemToBuy = new item(product.nombre, product.descripcion,
           product.precio, product.cantidad);
+          
+          let itemData = itemToBuy.itemData
+          itemsForPaypal.push(itemData);
 
-          items.push(itemToBuy.itemData);
+          itemData.id = product.id;
+          itemsActive.push(itemData);
       });
 
-      let newPurchaseUnit = new purchaseUnit(cartData.total, items);
+      console.log("Items active:", itemsActive);
+      setItemsActive(itemsActive);
+
+      let newPurchaseUnit = new purchaseUnit(cartData.total, itemsForPaypal);
       setFinalPurchase(newPurchaseUnit.unit);
-      console.log("Compra a realizar let: ", finalPurchase);
+      //console.log("Compra a realizar let: ", finalPurchase);
 
       return () => {
         
@@ -58,10 +82,42 @@ const CheckoutScreen = (props) => {
         setShowGateway(false);
         let payment = JSON.parse(data);
         if (payment.status === 'COMPLETED') {
+          SaveOrder();
           alert('PAYMENT MADE SUCCESSFULLY!');
         } else {
           alert('PAYMENT FAILED. PLEASE TRY AGAIN.');
           console.log(payment.order)
+        }
+      }
+
+      async function SaveOrder(){
+        let date = Timestamp.now().toDate().toString().split(" ", 4)
+        let dateString = "";
+
+        for(let i = 0; i < date.length; i++){
+          dateString+= i<date.length-1 ? (date[i] + "-") : (date[i]);
+        }
+
+        console.log("Items active (in save order):", itemsActive);
+        itemsActive.forEach(item => {
+          console.log("item in itemsActive",item);
+          let newOrder = new Order(item.id, item.quantity, 
+            dateString, item.quantity * item.unit_amount.value);
+
+          console.log("Order created:", newOrder);
+
+          SaveOnDataBase(newOrder.orderData);
+        }); 
+      }
+
+      async function SaveOnDataBase(order){
+        try {
+          //let docRef = await addDoc(collection(db, "cuentas"), order);
+          let newOrder = doc(collection(db, "cuentas", user.userID, "ordenes"));
+          await setDoc(newOrder, order);
+          //console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document: ", e);
         }
       }
 

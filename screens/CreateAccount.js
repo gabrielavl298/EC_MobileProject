@@ -10,7 +10,7 @@ import { color } from 'react-native-elements/dist/helpers';
 //Firebase
 import { auth, db } from '../config/cFirebase';
 import { createUserWithEmailAndPassword, updateProfile  } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc } from "firebase/firestore";
 
 //Models
 import {UserAccount} from "../models/UserAccountModel"
@@ -45,9 +45,9 @@ const CreateAccount = ({ navigation }) => {
             console.log("user just created: ", userCreated);
 
             let userID = userCredential.user.uid;
-            let newUser = new UserAccount(username, phone, email, userID);
+            let newUser = new UserAccount(username, phone, email);
             //console.log(newUser.account);
-            WriteInDB(newUser.account);
+            WriteInDB(newUser.account, userID);
 
             dispatch({
                 type: authActionTypes.AUTH_USER,
@@ -66,10 +66,11 @@ const CreateAccount = ({ navigation }) => {
         });
     }
 
-    async function WriteInDB(userData){
+    async function WriteInDB(userData, id){
         try {
-            const docRef = await addDoc(collection(db, "cuentas"), userData);
-            console.log("Document written with ID: ", docRef.id);
+            //const docRef = await addDoc(collection(db, "cuentas"), userData);
+            const docRef = await setDoc(doc(db, "cuentas", id), userData);
+            
         } catch (e) {
             console.error("Error adding document: ", e);
         }

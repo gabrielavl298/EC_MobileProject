@@ -1,6 +1,5 @@
-export var UserAccount = function(username, phone, email, userID) {
+export var UserAccount = function(username, phone, email) {
     this.account = {
-        userID: userID,
         username: username,
         phone: phone,
         email: email
