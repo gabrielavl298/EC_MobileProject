@@ -9,6 +9,8 @@ import Themes from '../constants/Themes';
 import HomeStack from './HomeStack';
 import CheckoutStack from './CheckoutStack';
 import LoginStack from './LoginStack';
+import OrderListScreen from '../screens/orderScreens/OrderListScreen';
+
 import { withTheme } from 'react-native-elements';
 
 //Firebase
@@ -17,6 +19,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 //Utils
 import { authActionTypes } from '../utils/Reducer';
 import { useStateValue } from '../utils/StateProvider';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -71,6 +74,15 @@ const DrawerNav = () => {
             <Drawer.Screen name="CheckoutStack" component={CheckoutStack}  
                 options={{
                     title: 'My Cart',
+                    headerShown: false,
+                    drawerActiveTintColor: Themes.COLORS.DRAWER.SELECT_TXT,
+                    drawerActiveBackgroundColor: Themes.COLORS.DRAWER.SELECT_BG
+                }}
+            />
+
+            <Drawer.Screen name="Orders" component={OrderListScreen}  
+                options={{
+                    title: 'Orders',
                     headerShown: false,
                     drawerActiveTintColor: Themes.COLORS.DRAWER.SELECT_TXT,
                     drawerActiveBackgroundColor: Themes.COLORS.DRAWER.SELECT_BG

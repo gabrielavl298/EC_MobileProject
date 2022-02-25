@@ -9,7 +9,6 @@ import Themes from '../constants/Themes'
 //Utils
 import { useStateValue } from '../utils/StateProvider';
 import { actionTypes } from '../utils/Reducer';
-import { NavigationContainer } from '@react-navigation/native';
 
 const CartScreen = ({navigation}) => {
     const [isLoading, setLoading] = useState(true);
