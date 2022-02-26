@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from 'react'
-import { StyleSheet, Text, View, FlatList, ActivityIndicator} from 'react-native'
+import { StyleSheet, Text, View, FlatList, ActivityIndicator, Modal, Pressable} from 'react-native'
 import { 
     Avatar,
     ListItem } from 'react-native-elements';
+
+//Constants
+import Themes from '../../constants/Themes'
 
 //Utils
 import { useStateValue } from '../../utils/StateProvider';
@@ -18,6 +21,7 @@ export default function OrderListScreen({navigation}) {
     const [{localOrders}, dispatchOrder] = useStateValue();
 
     const [isLoading, setIsLoading] = useState(true)
+    const [modal, setModal] = useState({visible: false, productData: {}});
 
     useEffect(() => {
         if(user.auth){
@@ -81,7 +85,11 @@ export default function OrderListScreen({navigation}) {
 
     const renderOrderList = ({ item, index }) => (
          <View>
-            <ListItem bottomDivider>
+            <ListItem bottomDivider 
+            onPress={() =>  {
+                console.log("item for modal", item);
+                setModal({visible: true, productData: item})
+            }}>
                 <Avatar source={{
                     uri: "https://rukminim1.flixcart.com/image/1408/1408/sunglass/r/a/p/0rb3025il9797-rayban-58-original-imadqb2ny5chn6hc.jpeg?q=90"
                     }} 
@@ -107,11 +115,78 @@ export default function OrderListScreen({navigation}) {
             renderItem={renderOrderList}
             />
         </View>
-      ) 
-      
-    }
+      )}
+
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modal.visible}
+            onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModal({visible: !modal.visible, productData: {}});
+            }}
+        >
+            <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                    <Text style={styles.modalText}>{modal.visible ? modal.productData.productData.name : ""}</Text>
+                    <Text style={styles.modalText}>{modal.visible ? (modal.productData.time) : ""}</Text>
+                    <Text style={styles.modalText}>{modal.visible ? ("Cantidad: " + modal.productData.quantity) : ""}</Text>
+                    <Text style={styles.modalText}>{modal.visible ? ("Total: $" + modal.productData.total) : ""}</Text>
+
+                    <Pressable
+                        style={[styles.button, styles.buttonClose]}
+                        onPress={() => setModal({visible: !modal.visible, productData: {}})}
+                    >
+                        <Text style={styles.textStyle}>Close</Text>
+                    </Pressable>
+                </View>
+            </View>
+        </Modal>
+
     </View>
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    centeredView: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 22
+      },
+      modalView: {
+        margin: 20,
+        backgroundColor: "white",
+        borderRadius: 20,
+        padding: 35,
+        alignItems: "center",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5
+      },
+      button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+      },
+      buttonOpen: {
+        backgroundColor: "#F194FF",
+      },
+      buttonClose: {
+        backgroundColor: Themes.COLORS.ERROR,
+      },
+      textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+      },
+      modalText: {
+        marginBottom: 15,
+        textAlign: "center"
+      }
+})
