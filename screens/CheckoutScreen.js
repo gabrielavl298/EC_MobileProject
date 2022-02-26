@@ -18,7 +18,7 @@ import { Timestamp } from 'firebase/firestore';
 
 //Utils
 import { useStateValue } from '../utils/StateProvider';
-import { orderActionTypes } from '../utils/Reducer';
+import { actionTypes, orderActionTypes } from '../utils/Reducer';
 
 const CheckoutScreen = (props) => {
     const [showGateway, setShowGateway] = useState(false);
@@ -27,8 +27,9 @@ const CheckoutScreen = (props) => {
     const [finalPurchase, setFinalPurchase] = useState({}) //Object for paypal
     const [itemsActive, setItemsActive] = useState([])
 
+    const [{basket}, dispatchBasket] = useStateValue();
     const [{user}, dispatchUser] = useStateValue();
-    const [{orders}, dispatchOrder] = useStateValue();
+    const [{localOrders}, dispatchOrder] = useStateValue();
 
     let cartData = props.route.params;
 
@@ -85,6 +86,7 @@ const CheckoutScreen = (props) => {
         let payment = JSON.parse(data);
         if (payment.status === 'COMPLETED') {
           SaveOrder();
+
           alert('PAYMENT MADE SUCCESSFULLY!');
         } else {
           alert('PAYMENT FAILED. PLEASE TRY AGAIN.');
@@ -113,7 +115,16 @@ const CheckoutScreen = (props) => {
             type: orderActionTypes.ADD_ORDER_TO_LIST,
             data: newOrder.orderData
           })
+
+          RemoveItemFromBasket(item.id)
         }); 
+      }
+
+      function RemoveItemFromBasket(id){
+        dispatchBasket({
+          type: actionTypes.REMOVE_FROM_BASKET,
+          id: id
+        });
       }
 
       async function SaveOnDataBase(order){
