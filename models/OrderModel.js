@@ -1,6 +1,6 @@
-export var Order = function(productID, quantity, time, total) {
+export var Order = function(productData, quantity, time, total) {
     this.orderData = {
-        productID: productID,
+        productData: productData, 
         quantity: quantity,
         time: time,
         total: total

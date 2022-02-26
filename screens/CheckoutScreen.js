@@ -101,7 +101,7 @@ const CheckoutScreen = (props) => {
         console.log("Items active (in save order):", itemsActive);
         itemsActive.forEach(item => {
           console.log("item in itemsActive",item);
-          let newOrder = new Order(item.id, item.quantity, 
+          let newOrder = new Order(item, item.quantity, 
             dateString, item.quantity * item.unit_amount.value);
 
           console.log("Order created:", newOrder);

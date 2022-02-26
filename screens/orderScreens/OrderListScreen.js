@@ -42,9 +42,16 @@ export default function OrderListScreen({navigation}) {
         console.log("The orders", orders);
     }
 
-    const getOrderData = async () => {
-
-    }
+    /*async function getOrderData (pID) {
+        let  docSnapshot = await getDoc(doc(db, "productoInfo", pID));
+        if (docSnapshot.exists()) {
+            console.log("Document data:", docSnapshot.data());
+          } else {
+            // doc.data() will be undefined in this case
+            console.log("No such document!");
+          }
+        return docSnapshot.data();
+    }*/
 
     /*
     <ListItem bottomDivider>
