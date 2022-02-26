@@ -18,6 +18,7 @@ import { Timestamp } from 'firebase/firestore';
 
 //Utils
 import { useStateValue } from '../utils/StateProvider';
+import { orderActionTypes } from '../utils/Reducer';
 
 const CheckoutScreen = (props) => {
     const [showGateway, setShowGateway] = useState(false);
@@ -27,6 +28,7 @@ const CheckoutScreen = (props) => {
     const [itemsActive, setItemsActive] = useState([])
 
     const [{user}, dispatchUser] = useStateValue();
+    const [{orders}, dispatchOrder] = useStateValue();
 
     let cartData = props.route.params;
 
@@ -107,6 +109,10 @@ const CheckoutScreen = (props) => {
           console.log("Order created:", newOrder);
 
           SaveOnDataBase(newOrder.orderData);
+          dispatchOrder({
+            type: orderActionTypes.ADD_ORDER_TO_LIST,
+            data: newOrder.orderData
+          })
         }); 
       }
 

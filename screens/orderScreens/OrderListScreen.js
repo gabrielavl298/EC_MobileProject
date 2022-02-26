@@ -6,15 +6,16 @@ import {
 
 //Utils
 import { useStateValue } from '../../utils/StateProvider';
+import { orderActionTypes } from '../../utils/Reducer';
 
 //Firebase
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../config/cFirebase';
 
-export default function OrderListScreen({navigation}) {
 
-    const [orders, setOrders] = useState([])
+export default function OrderListScreen({navigation}) {
     const [{user}, dispatchUser] = useStateValue();
+    const [{localOrders}, dispatchOrder] = useStateValue();
 
     const [isLoading, setIsLoading] = useState(true)
 
@@ -28,6 +29,15 @@ export default function OrderListScreen({navigation}) {
             
         }
     }, [user])
+
+    useEffect(() => {
+        console.log("current orders: ", localOrders)
+      return () => {
+        
+      }
+    }, [localOrders])
+    
+    
     
 
     const getOrders = async () => {
@@ -35,11 +45,14 @@ export default function OrderListScreen({navigation}) {
         const querySnapshot = await getDocs(collection(db, "cuentas", user.userID, "ordenes"));
         querySnapshot.forEach((doc) => data.push(doc.data()));
 
-        console.log("The orders un 'data' ", data);
+        dispatchOrder({
+            type: orderActionTypes.CLONE_ORDER_LIST_FROM_DB,
+            array: data
+          })
+
         //console.log("Data[0]", data[0]);
-        setOrders(data);
         setIsLoading(false);
-        console.log("The orders", orders);
+        //console.log("The orders", orders);
     }
 
     /*async function getOrderData (pID) {
@@ -75,7 +88,7 @@ export default function OrderListScreen({navigation}) {
                     size = 'medium'
                 />
                 <ListItem.Content>
-                    <ListItem.Title>Nombre producto</ListItem.Title>
+                    <ListItem.Title>{item.productData.name}</ListItem.Title>
                     <ListItem.Subtitle>{item.time}</ListItem.Subtitle>
                 </ListItem.Content>
                 <ListItem.Chevron />
@@ -89,7 +102,7 @@ export default function OrderListScreen({navigation}) {
       {isLoading ? <ActivityIndicator/> : (
         <View>
             <FlatList
-            data={orders}
+            data={localOrders}
             keyExtractor={(item, index) => index.toString()}
             renderItem={renderOrderList}
             />

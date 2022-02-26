@@ -5,7 +5,8 @@ export const initialState = {
         userID: undefined,
         email: undefined,
         username: undefined
-    }
+    },
+    localOrders: []
 }
 
 //Action for cart
@@ -23,6 +24,13 @@ export const actionTypes = {
 export const authActionTypes = {
     AUTH_USER: "AUTH_USER",
     LOGOUT_USER: "LOGOUT_USER"
+}
+
+//Action for Auth
+export const orderActionTypes = {
+    ADD_ORDER_TO_LIST: "ADD_ORDER_TO_LIST",
+    CLONE_ORDER_LIST_FROM_DB: "CLONE_ORDER_LIST_FROM_DB",
+    DELETE_LOCAL_ORDER_LIST: "DELETE_LOCAL_ORDER_LIST"
 }
 
 const reducer = (state, action) => {
@@ -121,6 +129,27 @@ const reducer = (state, action) => {
                     email: undefined,
                     username: undefined
                 }
+            }
+
+        case "ADD_ORDER_TO_LIST":
+            console.log("Entro a reduce : ADD ORDER LIST. \n data: \n",  action)
+            return {
+                ...state,
+                localOrders: [...state.localOrders, action.data]
+            }
+
+        case "CLONE_ORDER_LIST_FROM_DB":
+            console.log("Entro a reduce : CLONE ORDER LIST. \n data: \n", action)
+            return {
+                ...state,
+                localOrders : action.array
+            }
+
+        case "DELETE_LOCAL_ORDER_LIST":
+            let newArray = [];
+            return {
+                ...state,
+                localOrders: newArray
             }
         default: return state;
     }
