@@ -2,7 +2,9 @@ import React, {useEffect, useState} from 'react'
 import { StyleSheet, Text, View, FlatList, ActivityIndicator, Modal, Pressable} from 'react-native'
 import { 
     Avatar,
-    ListItem } from 'react-native-elements';
+    ListItem,
+    Button,
+   } from 'react-native-elements';
 
 //Constants
 import Themes from '../../constants/Themes'
@@ -105,44 +107,110 @@ export default function OrderListScreen({navigation}) {
     );
 
   return (
-    <View>
-      <Text>OrderListScreen</Text>
-      {isLoading ? <ActivityIndicator/> : (
-        <View>
-            <FlatList
-            data={localOrders}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={renderOrderList}
-            />
-        </View>
-      )}
+    <View style = {{flex: 1}}>
+      {user.auth ? (
+        <>
+        {isLoading ? <ActivityIndicator/> : (
+          <View>
+              <FlatList
+              data={localOrders}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={renderOrderList}
+              />
+          </View>
+        )}
+  
+          <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modal.visible}
+              onRequestClose={() => {
+                  Alert.alert("Modal has been closed.");
+                  setModal({visible: !modal.visible, productData: {}});
+              }}
+          >
+              <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                      <Text style={styles.modalText}>{modal.visible ? modal.productData.productData.name : ""}</Text>
+                      <Text style={styles.modalText}>{modal.visible ? (modal.productData.time) : ""}</Text>
+                      <Text style={styles.modalText}>{modal.visible ? ("Cantidad: " + modal.productData.quantity) : ""}</Text>
+                      <Text style={styles.modalText}>{modal.visible ? ("Total: $" + modal.productData.total) : ""}</Text>
+  
+                      <Pressable
+                          style={[styles.button, styles.buttonClose]}
+                          onPress={() => setModal({visible: !modal.visible, productData: {}})}
+                      >
+                          <Text style={styles.textStyle}>Close</Text>
+                      </Pressable>
+                  </View>
+              </View>
+          </Modal>
+          </>
+      ):(
+        <>
+        <View style = {styles.cartEmptyContainer}>
+                <View>
+                    <Text>You have to sign in to see your order list</Text>
+                </View>
+                <View>
+                    <View>
+                        <Button
+                            title="Sign in"
+                            icon={{
+                                name: 'user',
+                                type: 'font-awesome',
+                                size: 15,
+                                color: 'white',
+                            }}
+                            iconRight
+                            iconContainerStyle={{ marginLeft: 10 }}
+                            titleStyle={{ fontWeight: '700' }}
+                            buttonStyle={{
+                                backgroundColor: Themes.COLORS.PRIMARY,
+                                borderColor: 'transparent',
+                                borderWidth: 0,
+                                borderRadius: 30,
+                            }}
+                            containerStyle={{
+                                width: 200,
+                                marginHorizontal: 50,
+                                marginVertical: 10,
+                            }}
+                            onPress= {() => navigation.navigate('LoginStack', { screen: 'Login'})}
+                        />
+                    </View>
 
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modal.visible}
-            onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
-                setModal({visible: !modal.visible, productData: {}});
-            }}
-        >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <Text style={styles.modalText}>{modal.visible ? modal.productData.productData.name : ""}</Text>
-                    <Text style={styles.modalText}>{modal.visible ? (modal.productData.time) : ""}</Text>
-                    <Text style={styles.modalText}>{modal.visible ? ("Cantidad: " + modal.productData.quantity) : ""}</Text>
-                    <Text style={styles.modalText}>{modal.visible ? ("Total: $" + modal.productData.total) : ""}</Text>
-
-                    <Pressable
-                        style={[styles.button, styles.buttonClose]}
-                        onPress={() => setModal({visible: !modal.visible, productData: {}})}
-                    >
-                        <Text style={styles.textStyle}>Close</Text>
-                    </Pressable>
+                    <View>
+                        <Button
+                            title="Sign up"
+                            type='outline'
+                            icon={{
+                                name: 'user',
+                                type: 'font-awesome',
+                                size: 15,
+                                color: 'white',
+                            }}
+                            iconRight
+                            iconContainerStyle={{ marginLeft: 10 }}
+                            titleStyle={{ fontWeight: '700', color: Themes.COLORS.PRIMARY}}
+                            buttonStyle={{
+                                borderColor: Themes.COLORS.PRIMARY,
+                                borderWidth: 1,
+                                borderRadius: 30,
+                            }}
+                            containerStyle={{
+                                width: 200,
+                                marginHorizontal: 50,
+                                marginVertical: 10,
+                            }}
+                            onPress= {() => navigation.navigate('LoginStack', { screen: 'CreateAccount'})}
+                        />
+                    </View>
                 </View>
             </View>
-        </Modal>
-
+            </>
+      )
+      }
     </View>
   )
 }
@@ -188,5 +256,11 @@ const styles = StyleSheet.create({
       modalText: {
         marginBottom: 15,
         textAlign: "center"
-      }
+      },
+      cartEmptyContainer:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+        
+    },
 })
