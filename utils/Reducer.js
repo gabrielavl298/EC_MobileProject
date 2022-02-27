@@ -17,6 +17,8 @@ export const actionTypes = {
     REMOVE_ONE_TO_BASKET: "REMOVE_ONE_TO_BASKET", //Quit product counter by one
     SET_QUANTITY_TO_BASKET : "SET_QUANTITY_TO_BASKET", //Set the quantity of a product
     SET_ENABLE_TO_BASKET : "SET_ENABLE_TO_BASKET", //Set if product is enabled to checkout
+    CLONE_BASKET_FROM_DB: "CLONE_BASKET_FROM_DB", //Get the basket from db
+    DELETE_LOCAL_BASKET: "DELETE_LOCAL_BASKET" // Delete basket when log out
 
 }
 
@@ -108,6 +110,20 @@ const reducer = (state, action) => {
                 basket: newBasket
             }
 
+        case "CLONE_BASKET_FROM_DB":
+            console.log("Entro a reduce : CLONE BASKET FROM DB. \n data: \n", action)
+            return {
+                ...state,
+                basket: action.array
+            }
+
+        case "DELETE_LOCAL_BASKET":
+            console.log("Entro a reduce : DELETE LOCAL BASKET");
+            return {
+                ...state,
+                basket: new Array()
+            }
+
         /* AUTH CASES */
         case "AUTH_USER":
             return {
@@ -132,14 +148,14 @@ const reducer = (state, action) => {
             }
 
         case "ADD_ORDER_TO_LIST":
-            console.log("Entro a reduce : ADD ORDER LIST. \n data: \n",  action)
+            //console.log("Entro a reduce : ADD ORDER LIST. \n data: \n",  action)
             return {
                 ...state,
                 localOrders: [...state.localOrders, action.data]
             }
 
         case "CLONE_ORDER_LIST_FROM_DB":
-            console.log("Entro a reduce : CLONE ORDER LIST. \n data: \n", action)
+            //console.log("Entro a reduce : CLONE ORDER LIST. \n data: \n", action)
             return {
                 ...state,
                 localOrders : action.array

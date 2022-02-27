@@ -80,6 +80,38 @@ const CartScreen = ({navigation}) => {
       };
     }, [basket]);
 
+    useEffect(() => {
+      if(user.auth){
+         
+      }
+    
+      return () => {
+        
+      }
+    }, [user])
+    
+    async function SaveOnDataBase(item){
+        try {
+          //let docRef = await addDoc(collection(db, "cuentas"), item);
+          let newItem = doc(collection(db, "cuentas", user.userID, "carrito"));
+          await setDoc(newItem, item);
+          //console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+      }
+
+      async function DeleteFromDataBase(item){
+        try {
+          //let docRef = await addDoc(collection(db, "cuentas"), item);
+          let newItem = doc(collection(db, "cuentas", user.userID, "carrito"));
+          await setDoc(newItem, item);
+          //console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
+      }
+
 
     const cartItem = ({ item, index }) => (
         <ListItem bottomDivider>

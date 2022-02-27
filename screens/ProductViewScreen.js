@@ -10,6 +10,10 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Themes from '../constants/Themes'
 
+//Firebase
+import { collection, getDocs, setDoc, doc } from 'firebase/firestore';
+import { db } from '../config/cFirebase';
+
 //Uitls
 import { actionTypes } from '../utils/Reducer';
 import { useStateValue } from '../utils/StateProvider';
@@ -17,33 +21,68 @@ import { useStateValue } from '../utils/StateProvider';
 const ProductViewScreen = ({route}, {navigation}) => {
 
     const [{basket}, dispatch] = useStateValue();
+    const [{user}, dispatchUser] = useStateValue();
     const pData = route.params.pData;
-    function AddToCart(){
-        Alert.alert(
-            "Product added!",
-            "See your cart to view your products ;)",
-            [
-                //{ text: "OK", onPress: () => navigation.navigate('HomeScreen')}
-                { text: "OK"}
-            ]
-        );
+    async function AddToCart(){
+        let item = {
+            id: pData.id,
+            id_empresa: pData.data.id_empresa,
+            nombre: pData.data.nombre,
+            descripcion: pData.data.descripcion,
+            image: pData.data.image,
+            precio: pData.data.precio,
+            titulo: pData.data.titulo,
+            cantidad: 1,
+            habilitado: true
+        } 
 
-        dispatch({
-            type: actionTypes.ADD_TO_BASKET,
-            item: {
-                id: pData.id,
-                id_empresa: pData.data.id_empresa,
-                nombre: pData.data.nombre,
-                descripcion: pData.data.descripcion,
-                image: pData.data.image,
-                precio: pData.data.precio,
-                titulo: pData.data.titulo,
-                cantidad: 1,
-                habilitado: true
+        let saved = false;
+        console.log("current basket", basket);
+        let index = basket.findIndex(basketItem => basketItem.id === pData.id);
+        let itemToSave = index >= 0 ? {...basket[index]} : {...item};
+        itemToSave.cantidad += index >= 0 ? 1 : 0
+        delete itemToSave.id;
+        console.log("Item to save:", itemToSave);
+        console.log("Index:", index);
 
-            }
-        });
+        try {
+            //let docRef = await addDoc(collection(db, "cuentas"), item);
+            let newItem = doc(db, "cuentas", user.userID, "carrito", pData.id);
+    
+            await setDoc(newItem, itemToSave);
+            //console.log("Document written with ID: ", docRef.id);
+            saved = true;
+        } catch (e) {
+            console.error("Error adding document: ", e);
+            saved = false;
+        }
+        
+        
+        if(saved){
+            dispatch({
+                type: actionTypes.ADD_TO_BASKET,
+                item: item
+            });
+            Alert.alert(
+                "Product added!",
+                "See your cart to view your products ;)",
+                [
+                    //{ text: "OK", onPress: () => navigation.navigate('HomeScreen')}
+                    { text: "OK"}
+                ]
+            );
+        }else{
+            Alert.alert(
+                "Ups",
+                "Something were wrong, sorry :c. \n Try again later",
+                [
+                    //{ text: "OK", onPress: () => navigation.navigate('HomeScreen')}
+                    { text: "OK"}
+                ]
+            );
+        }
 
+        
 
     }
 
