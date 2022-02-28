@@ -176,7 +176,7 @@ const CreateAccount = ({ navigation }) => {
                             autoCompleteType = 'off'
                             onChange = {(e) => setPhone(e.nativeEvent.text)}
                             errorMessage = {phoneError ? "Use the format: 999-999-9999": ''}
-                            keyboardType = 'number-pad'
+                            keyboardType = 'phone-pad'
                         />
                     </View>
                     <View>
