@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { StyleSheet, View, Image, ScrollView, Alert, FlatList, Switch } from 'react-native'
+import { StyleSheet, View, Image, ScrollView, Alert, FlatList, Switch, ActivityIndicator } from 'react-native'
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {colors, Input, Button, Text, ListItem, Avatar} from 'react-native-elements'
@@ -7,7 +7,7 @@ import {colors, Input, Button, Text, ListItem, Avatar} from 'react-native-elemen
 import Themes from '../constants/Themes'
 
 //Firebase
-import { collection, setDoc, doc, deleteDoc } from 'firebase/firestore';
+import { collection, setDoc, doc, deleteDoc, getDocs } from 'firebase/firestore';
 import { db } from '../config/cFirebase';
 
 //Utils
@@ -19,11 +19,9 @@ const CartScreen = ({navigation}) => {
     const [isLoading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
 
-    const [{basket}, dispatch] = useStateValue();
-    const [{user}, dispatchUser] = useStateValue();
+    const [{basket}, dispatch] = useStateValue([]);
+    const [{user}, dispatchUser] = useStateValue({});
     const [enProducts, setEnProducts] = useState([]);
-
-    let copyOfBasket = {};
 
     const getMovies = async () => {
         try {
@@ -159,7 +157,8 @@ const CartScreen = ({navigation}) => {
 
     useEffect(() => {
       if(user.auth){
-         
+        setLoading(false);
+         getCart()
       }
     
       return () => {
@@ -206,6 +205,22 @@ const CartScreen = ({navigation}) => {
         }
         return saved;
       }
+
+      const getCart = async () => {
+          console.log("user id from cart screen:", user.userID);
+        let data = [];
+        const querySnapshot = await getDocs(collection(db, "cuentas", user.userID, "carrito"));
+        querySnapshot.forEach((doc) => data.push(doc.data()));
+
+        dispatch({
+            type: actionTypes.CLONE_BASKET_FROM_DB,
+            array: data
+          })
+
+        //console.log("Data[0]", data[0]);
+        setLoading(false);
+        //console.log("The orders", orders);
+    }
 
 
     const cartItem = ({ item, index }) => (
@@ -286,11 +301,14 @@ const CartScreen = ({navigation}) => {
     const cartView = ()  => (
         <View>
             <View style = {styles.cartListContainer}>
-            <FlatList
+                {isLoading ? <ActivityIndicator/> : (
+                    <FlatList
                     data={basket}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={cartItem}
                 />
+                )}
+            
             </View>
             <View style= {styles.bootomContainer}>
                 <View style= {{flex:1, justifyContent:'center'}}>

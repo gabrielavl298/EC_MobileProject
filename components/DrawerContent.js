@@ -14,7 +14,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 //Utils
-import { authActionTypes, orderActionTypes } from '../utils/Reducer';
+import { actionTypes, authActionTypes, orderActionTypes } from '../utils/Reducer';
 import { useStateValue } from '../utils/StateProvider';
 
 import { getAuth, signOut } from "firebase/auth";
@@ -26,6 +26,7 @@ const DrawerContent = (props) => {
   const [auth, isAuth] = useState(false);
   const [{user}, dispatch] = useStateValue();
   const [{localOrders}, dispatchOrder] = useStateValue();
+  const [{basket}, dispatchBasket] = useStateValue();
 
   useEffect(() => {
     isAuth(user.auth)
@@ -46,7 +47,10 @@ const DrawerContent = (props) => {
           });    
           dispatchOrder({
             type: orderActionTypes.DELETE_LOCAL_ORDER_LIST
-          })     
+          })    
+          dispatchBasket({
+            type: actionTypes.DELETE_LOCAL_BASKET
+          })    
     }
 
     const renderUser = () => (
