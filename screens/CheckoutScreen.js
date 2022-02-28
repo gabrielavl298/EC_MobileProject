@@ -7,7 +7,7 @@ import { item, purchaseUnit } from '../models/CheckoutModels';
 
 //Firebase
 import { db } from '../config/cFirebase';
-import { collection, addDoc, doc, setDoc } from "firebase/firestore";
+import { collection, addDoc, doc, setDoc, deleteDoc } from "firebase/firestore";
 
 //Aux
 import Themes from '../constants/Themes';
@@ -116,7 +116,8 @@ const CheckoutScreen = (props) => {
             data: newOrder.orderData
           })
 
-          RemoveItemFromBasket(item.id)
+          DeleteFromDataBase(item.id);
+          RemoveItemFromBasket(item.id);
         }); 
       }
 
@@ -125,6 +126,17 @@ const CheckoutScreen = (props) => {
           type: actionTypes.REMOVE_FROM_BASKET,
           id: id
         });
+      }
+
+      async function DeleteFromDataBase(id){
+        try {
+          //let docRef = await addDoc(collection(db, "cuentas"), item);
+          let itemToDelete = doc(db, "cuentas", user.userID, "carrito", id);
+          await deleteDoc(itemToDelete);
+          //console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+            console.error("Error adding document: ", e);
+        }
       }
 
       async function SaveOnDataBase(order){

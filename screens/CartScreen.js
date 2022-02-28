@@ -6,9 +6,14 @@ import {colors, Input, Button, Text, ListItem, Avatar} from 'react-native-elemen
 
 import Themes from '../constants/Themes'
 
+//Firebase
+import { collection, setDoc, doc, deleteDoc } from 'firebase/firestore';
+import { db } from '../config/cFirebase';
+
 //Utils
 import { useStateValue } from '../utils/StateProvider';
 import { actionTypes } from '../utils/Reducer';
+import { item } from '../models/CheckoutModels';
 
 const CartScreen = ({navigation}) => {
     const [isLoading, setLoading] = useState(true);
@@ -16,7 +21,9 @@ const CartScreen = ({navigation}) => {
 
     const [{basket}, dispatch] = useStateValue();
     const [{user}, dispatchUser] = useStateValue();
-    const [enProducts, setEnProducts] = useState([])
+    const [enProducts, setEnProducts] = useState([]);
+
+    let copyOfBasket = {};
 
     const getMovies = async () => {
         try {
@@ -30,39 +37,109 @@ const CartScreen = ({navigation}) => {
         }
     }
 
-    const removeItem = (id) => dispatch({
-        type: actionTypes.REMOVE_FROM_BASKET,
-        id: id
-    })
+    const removeItem = async(id) => {
+        let saved = await DeleteFromDataBase(id);
+        if(saved){
+            dispatch({
+                type: actionTypes.REMOVE_FROM_BASKET,
+                id: id
+            })
+        }else{
+            Alert.alert(
+                "Ups",
+                "Something were wrong, sorry :c. \n Try again later",
+                [
+                    //{ text: "OK", onPress: () => navigation.navigate('HomeScreen')}
+                    { text: "OK"}
+                ]
+            );
+        }
+    }
+    
 
-    const addOne = (id) => dispatch({
-        type: actionTypes.ADD_ONE_TO_BASKET,
-        id: id
-    })
+    const addOne = async (id) => {
+        let saved = await SaveOnDataBase(id, 1, undefined);
+        if(saved){
+            dispatch({
+                type: actionTypes.ADD_ONE_TO_BASKET,
+                id: id
+            });
+        }else{
+            Alert.alert(
+                "Ups",
+                "Something were wrong, sorry :c. \n Try again later",
+                [
+                    //{ text: "OK", onPress: () => navigation.navigate('HomeScreen')}
+                    { text: "OK"}
+                ]
+            );
+        }
+    }
 
-    const quitOne = (id) => dispatch({
-        type: actionTypes.REMOVE_ONE_TO_BASKET,
-        id: id
-    })
+    const quitOne = async (id) => {
+        let saved = await SaveOnDataBase(id, -1, undefined);
+        if(saved){
+            dispatch({
+                type: actionTypes.REMOVE_ONE_TO_BASKET,
+                id: id
+            });
+        }else{
+            Alert.alert(
+                "Ups",
+                "Something were wrong, sorry :c. \n Try again later",
+                [
+                    //{ text: "OK", onPress: () => navigation.navigate('HomeScreen')}
+                    { text: "OK"}
+                ]
+            );
+        }
+    }
 
-    const setQuantity = (id, quantity) => {
-        console.log("quantity:", quantity);
-        dispatch({
-        type: actionTypes.SET_QUANTITY_TO_BASKET,
-        id: id,
-        cantidad: quantity
-    })}
+    const setQuantity = async (id, quantity) => {
+        let quantityInt = parseInt(quantity);
+        console.log(quantity);
+        let saved = await SaveOnDataBase(id, quantityInt, undefined, true);
+        if(saved){
+            dispatch({
+                type: actionTypes.SET_QUANTITY_TO_BASKET,
+                id: id,
+                cantidad: quantity
+            });
+        }else{
+            Alert.alert(
+                "Ups",
+                "Something were wrong, sorry :c. \n Try again later",
+                [
+                    //{ text: "OK", onPress: () => navigation.navigate('HomeScreen')}
+                    { text: "OK"}
+                ]
+            );
+        }
+    }   
 
-    const setEnable = (id, enable) => {
-        //setIsEnabled(previousState => !previousState);
-        dispatch({
-            type: actionTypes.SET_ENABLE_TO_BASKET,
-            id: id,
-            habilitado: enable
-        })
+    const setEnable = async (id, enable) => {
+        let saved = await SaveOnDataBase(id, 0, enable, undefined, true);
+        if(saved){
+            dispatch({
+                type: actionTypes.SET_ENABLE_TO_BASKET,
+                id: id,
+                habilitado: enable
+            })
+        }else{
+            Alert.alert(
+                "Ups",
+                "Something were wrong, sorry :c. \n Try again later",
+                [
+                    //{ text: "OK", onPress: () => navigation.navigate('HomeScreen')}
+                    { text: "OK"}
+                ]
+            );
+        }
+        
     }
 
     useEffect(() => {
+        let copyOfBasket = {...basket};
         let enabledProducts = [];
         let total = 0;
         basket.forEach(product => {
@@ -72,7 +149,7 @@ const CartScreen = ({navigation}) => {
             } 
         });
         setEnProducts(enabledProducts);
-        console.log("new object variable: ", enProducts)
+        //console.log("new object variable: ", enProducts)
         
         setTotal(total);
       return () => {
@@ -90,26 +167,44 @@ const CartScreen = ({navigation}) => {
       }
     }, [user])
     
-    async function SaveOnDataBase(item){
+    async function SaveOnDataBase(id, add, changeEnable, manualAdd = false, manualEnable = false){
+        let saved = false;
+        //console.log("current basket", basket);
+        let index = basket.findIndex(basketItem => basketItem.id === id);
+        let itemToSave = {...basket[index]}
+        itemToSave.cantidad = manualAdd ? add : itemToSave.cantidad + add;
+        itemToSave.habilitado = manualEnable ? changeEnable : itemToSave.habilitado;
+        delete itemToSave.id;
+        console.log("Item to save:", itemToSave);
+        console.log("Index:", index);
+
         try {
-          //let docRef = await addDoc(collection(db, "cuentas"), item);
-          let newItem = doc(collection(db, "cuentas", user.userID, "carrito"));
-          await setDoc(newItem, item);
-          //console.log("Document written with ID: ", docRef.id);
+            //let docRef = await addDoc(collection(db, "cuentas"), item);
+            let newItem = doc(db, "cuentas", user.userID, "carrito", id);
+    
+            await setDoc(newItem, itemToSave);
+            //console.log("Document written with ID: ", docRef.id);
+            saved = true;
         } catch (e) {
             console.error("Error adding document: ", e);
+            saved = false;
         }
+
+        return saved;
       }
 
-      async function DeleteFromDataBase(item){
+      async function DeleteFromDataBase(id){
+        let saved = false;
         try {
           //let docRef = await addDoc(collection(db, "cuentas"), item);
-          let newItem = doc(collection(db, "cuentas", user.userID, "carrito"));
-          await setDoc(newItem, item);
+          let itemToDelete = doc(db, "cuentas", user.userID, "carrito", id);
+          await deleteDoc(itemToDelete);
+          saved = true;
           //console.log("Document written with ID: ", docRef.id);
         } catch (e) {
             console.error("Error adding document: ", e);
         }
+        return saved;
       }
 
 
@@ -131,7 +226,7 @@ const CartScreen = ({navigation}) => {
                             <Button 
                                 title= '<'
                                 buttonStyle= {{width: '50%', backgroundColor: Themes.COLORS.PRIMARY}}
-                                onPress={() => quitOne(item.id)}
+                                onPress={async() => quitOne(item.id)}
                             />
                         </View>
                         <View style = {{flex:1}}>
@@ -139,10 +234,10 @@ const CartScreen = ({navigation}) => {
                                 inputStyle = {{textAlign: 'center'}}
                                 inputContainerStyle = {{width: '100%'}}
                                 value = {String(item.cantidad)}
-                                onChange = {(e) => setQuantity(item.id, (e.nativeEvent.text).replace(/[^0-9]/g, ''))}
+                                onChange = {async(e) => setQuantity(item.id, (e.nativeEvent.text).replace(/[^0-9]/g, ''))}
                                 keyboardType='numeric'
-                                onEndEditing = {(e) => {
-                                    if(e.nativeEvent.text.length == 0) setQuantity(item.id, 1)
+                                onEndEditing = {async(e) => {
+                                    if(e.nativeEvent.text.length == 0 || e.nativeEvent.text == "0") setQuantity(item.id, 1)
                                 }}
 
                             /> 
@@ -151,7 +246,7 @@ const CartScreen = ({navigation}) => {
                             <Button 
                                 title= '>'
                                 buttonStyle= {{width: '50%', backgroundColor: Themes.COLORS.PRIMARY}}
-                                onPress={() => addOne(item.id)}
+                                onPress={async() => addOne(item.id)}
                             />
                         </View>
                     </View>
@@ -166,7 +261,7 @@ const CartScreen = ({navigation}) => {
                                         color: 'white',
                                     }}
                                     buttonStyle= {{backgroundColor: Themes.COLORS.ERROR}}
-                                    onPress={() => removeItem(item.id)}
+                                    onPress={async() => removeItem(item.id)}
                                 />
                            </View>
                         </View>
@@ -176,7 +271,7 @@ const CartScreen = ({navigation}) => {
                                     trackColor={{ false: Themes.COLORS.SWITCH_OFF_TRACK, true: Themes.COLORS.SWITCH_ON_TRACK}}
                                     thumbColor={item.habilitado ? Themes.COLORS.SWITCH_ON_THUMB : Themes.COLORS.SWITCH_OFF_THUMB}
                                     ios_backgroundColor="#3e3e3e"
-                                    onValueChange={(e) => setEnable(item.id, e)}
+                                    onValueChange={async(e) => setEnable(item.id, e)}
                                     value = {item.habilitado}
                                 />
                             </View>

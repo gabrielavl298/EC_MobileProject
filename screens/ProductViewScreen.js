@@ -37,13 +37,10 @@ const ProductViewScreen = ({route}, {navigation}) => {
         } 
 
         let saved = false;
-        console.log("current basket", basket);
         let index = basket.findIndex(basketItem => basketItem.id === pData.id);
         let itemToSave = index >= 0 ? {...basket[index]} : {...item};
         itemToSave.cantidad += index >= 0 ? 1 : 0
         delete itemToSave.id;
-        console.log("Item to save:", itemToSave);
-        console.log("Index:", index);
 
         try {
             //let docRef = await addDoc(collection(db, "cuentas"), item);
