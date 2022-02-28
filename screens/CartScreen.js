@@ -75,6 +75,7 @@ const CartScreen = ({navigation}) => {
     }
 
     const quitOne = async (id) => {
+        //console.log("The id from cart screen (78) ", id)
         let saved = await SaveOnDataBase(id, -1, undefined);
         if(saved){
             dispatch({
@@ -137,7 +138,6 @@ const CartScreen = ({navigation}) => {
     }
 
     useEffect(() => {
-        let copyOfBasket = {...basket};
         let enabledProducts = [];
         let total = 0;
         basket.forEach(product => {
@@ -210,12 +210,19 @@ const CartScreen = ({navigation}) => {
           console.log("user id from cart screen:", user.userID);
         let data = [];
         const querySnapshot = await getDocs(collection(db, "cuentas", user.userID, "carrito"));
-        querySnapshot.forEach((doc) => data.push(doc.data()));
+        querySnapshot.forEach((doc, i = 0) => {
+            data.push(doc.data());
+            data[i].id = doc.id;
+
+            i++;
+        });
 
         dispatch({
             type: actionTypes.CLONE_BASKET_FROM_DB,
             array: data
           })
+
+          //console.log("Basket from cart screen (219)",basket);
 
         //console.log("Data[0]", data[0]);
         setLoading(false);
@@ -345,6 +352,7 @@ const CartScreen = ({navigation}) => {
                             title='Checkout >'
                             buttonStyle = {{backgroundColor: Themes.COLORS.PRIMARY}}
                             onPress = {() => navigation.navigate("CheckoutScreen", {items: enProducts, total: total})}
+                            disabled = {basket.length > 0 ? false : true}
                         />
                     </View>
                 </View>
