@@ -96,7 +96,7 @@ const ProductViewScreen = ({route}, {navigation}) => {
             <View style = {styles.productImageContainer}>
                 <View style={styles.productImageBorder}>
                     <Image
-                        source={{ uri: "https://rukminim1.flixcart.com/image/1408/1408/sunglass/r/a/p/0rb3025il9797-rayban-58-original-imadqb2ny5chn6hc.jpeg?q=90" }}
+                        source={{ uri: pData.data.image }}
                         style={styles.productImageStyle}
                     />
                 </View>

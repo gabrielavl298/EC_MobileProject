@@ -65,6 +65,8 @@ const CheckoutScreen = (props) => {
           itemsForPaypal.push(itemData);
 
           itemData.id = product.id;
+          itemData.image = product.image;
+
           itemsActive.push(itemData);
       });
 

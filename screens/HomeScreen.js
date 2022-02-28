@@ -89,7 +89,7 @@ export default function HomeScreen({navigation}) {
             <View style = {styles.carouselItemContent}>
                 <View style={{flex: 1}}>
                     <ImageBackground
-                        source={{ uri: "https://rukminim1.flixcart.com/image/1408/1408/sunglass/r/a/p/0rb3025il9797-rayban-58-original-imadqb2ny5chn6hc.jpeg?q=90" }}
+                        source={{ uri: item.data.image }}
                         style={{ width: '100%', height: '98%',flex: 1}}
                     >
                        <View style= {{flex:1 ,alignSelf:'flex-end', width: '60%', backgroundColor: Themes.COLORS.SECONDARY, opacity: .9}}>

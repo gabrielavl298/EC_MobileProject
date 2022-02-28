@@ -93,7 +93,7 @@ export default function OrderListScreen({navigation}) {
                 setModal({visible: true, productData: item})
             }}>
                 <Avatar source={{
-                    uri: "https://rukminim1.flixcart.com/image/1408/1408/sunglass/r/a/p/0rb3025il9797-rayban-58-original-imadqb2ny5chn6hc.jpeg?q=90"
+                    uri: item.productData.image
                     }} 
                     size = 'medium'
                 />
