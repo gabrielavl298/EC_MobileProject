@@ -29,6 +29,13 @@ const CreateAccount = ({ navigation }) => {
 
     const [{user}, dispatch] = useStateValue();
 
+    const [emailError, setEmailError] = useState(false);
+    const [notFoundError, setNotFoundError] = useState(false);
+    
+    const [passwordError, setPasswordError] = useState(false)
+    const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+
+
 
     /*  */
     async function RegisterUser(){
@@ -73,6 +80,18 @@ const CreateAccount = ({ navigation }) => {
             
         } catch (e) {
             console.error("Error adding document: ", e);
+        }
+    }
+
+    function WritePassword(text){
+        setPassword(text);
+        setPasswordError(password.length < 7 ? true : false);
+    }
+    function ConfirmPassword(text){
+        if(text == password){
+            setConfirmPasswordError(false);
+        }else{
+            setConfirmPasswordError(true);
         }
     }
 
@@ -137,7 +156,8 @@ const CreateAccount = ({ navigation }) => {
                             secureTextEntry={true}
 
                             value = {password}
-                            onChange = {(e) => setPassword(e.nativeEvent.text)}
+                            onChange = {(e) => WritePassword(e.nativeEvent.text)}
+                            errorMessage = {passwordError ? "Password too short" : ""}
                         />
                         <Input placeholder = 'Confirm password' 
                             color={Themes.COLORS.SECONDARY}
@@ -148,6 +168,8 @@ const CreateAccount = ({ navigation }) => {
                             color= {Themes.COLORS.ICON1}
                             />}
                             secureTextEntry={true}
+                            onChange = {(e) => ConfirmPassword(e.nativeEvent.text)}
+                            errorMessage = {confirmPasswordError ? "Passwords doesn't match" : ""} 
                         />
                     </View>
                     <View style={{alignItems: 'center'}}>
