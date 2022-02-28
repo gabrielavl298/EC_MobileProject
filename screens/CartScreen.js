@@ -352,7 +352,7 @@ const CartScreen = ({navigation}) => {
                             title='Checkout >'
                             buttonStyle = {{backgroundColor: Themes.COLORS.PRIMARY}}
                             onPress = {() => navigation.navigate("CheckoutScreen", {items: enProducts, total: total})}
-                            disabled = {basket.length > 0 ? false : true}
+                            disabled = {enProducts.length > 0 ? false : true}
                         />
                     </View>
                 </View>
