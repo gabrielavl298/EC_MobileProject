@@ -23,8 +23,8 @@ const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const [emailError, setEmailError] = useState("false");
-    const [notFoundError, setNotFoundError] = useState("false");
+    const [emailError, setEmailError] = useState(false);
+    const [notFoundError, setNotFoundError] = useState(false);
 
     const [{user}, dispatch] = useStateValue();
 
@@ -57,8 +57,9 @@ const LoginScreen = ({ navigation }) => {
                 case "auth/invalid-email":
                     setEmailError(true);
                     break;
-                case "auth/invalid-email":
+                case "auth/wrong-password":
                     setNotFoundError(true);
+                    setEmailError(false);
             }
         });
     }    
@@ -87,6 +88,7 @@ const LoginScreen = ({ navigation }) => {
                             errorMessage= { emailError ? 'Email address invalid' : ''}
                             onChange= {(e) => {setEmail(e.nativeEvent.text)}}
                             value = {email}
+                            renderErrorMessage = {true}
                         />
                     </View>
                     <View>
