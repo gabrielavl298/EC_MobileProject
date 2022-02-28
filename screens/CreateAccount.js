@@ -27,7 +27,9 @@ const CreateAccount = ({ navigation }) => {
 
 
     const [username, setUsername] = useState('')
+
     const [phone, setPhone] = useState('')
+    const [phoneError, setPhoneError] = useState(false)
 
     const [{user}, dispatch] = useStateValue();
 
@@ -58,6 +60,17 @@ const CreateAccount = ({ navigation }) => {
         
       }
     }, [password, confirmpassword])
+
+    useEffect(() => {
+        setPhoneError(!(phone.match(/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/)));
+
+        console.log("Entramos al match:", (phone.match(/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/)));
+    
+      return () => {
+        
+      }
+    }, [phone])
+    
     
 
     /*  */
@@ -150,6 +163,8 @@ const CreateAccount = ({ navigation }) => {
                             />}
                             autoCompleteType = 'off'
                             onChange = {(e) => setPhone(e.nativeEvent.text)}
+                            errorMessage = {phoneError ? "Use the format: 999-999-9999": ''}
+                            keyboardType = 'number-pad'
                         />
                     </View>
                     <View>
@@ -203,8 +218,8 @@ const CreateAccount = ({ navigation }) => {
                                 title = 'Sign up'
                                 buttonStyle = {{backgroundColor: Themes.COLORS.PRIMARY}}
                                 onPress={() => RegisterUser()}
-                                disabled = {(username.length == 0 || phone.length == 0 ||
-                                    email.length == 0 || passwordError || confirmPasswordError  )}
+                                disabled = {(username.length == 0 || phone.length == 0 || 
+                                    email.length == 0 || passwordError || confirmPasswordError || phoneError )}
                             />
                         </View>
                     </View>
