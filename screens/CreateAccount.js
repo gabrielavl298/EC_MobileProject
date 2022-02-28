@@ -27,6 +27,8 @@ const CreateAccount = ({ navigation }) => {
 
 
     const [username, setUsername] = useState('')
+    const [usernameError, setUsernameError] = useState(false)
+
 
     const [phone, setPhone] = useState('')
     const [phoneError, setPhoneError] = useState(false)
@@ -70,6 +72,15 @@ const CreateAccount = ({ navigation }) => {
         
       }
     }, [phone])
+
+    useEffect(() => {
+        setUsernameError(username.length <= 6);
+    
+      return () => {
+        
+      }
+    }, [username])
+    
     
     
 
@@ -150,6 +161,7 @@ const CreateAccount = ({ navigation }) => {
                             />}
                             autoCompleteType = 'off'
                             onChange = {(e) => setUsername(e.nativeEvent.text)}
+                            errorMessage ={usernameError ? "Username too short" : ""}
                         />
                     </View>
                     <View>
@@ -219,7 +231,8 @@ const CreateAccount = ({ navigation }) => {
                                 buttonStyle = {{backgroundColor: Themes.COLORS.PRIMARY}}
                                 onPress={() => RegisterUser()}
                                 disabled = {(username.length == 0 || phone.length == 0 || 
-                                    email.length == 0 || passwordError || confirmPasswordError || phoneError )}
+                                    email.length == 0 || passwordError || confirmPasswordError || phoneError
+                                    || usernameError )}
                             />
                         </View>
                     </View>
