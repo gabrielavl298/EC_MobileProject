@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, ScrollView  } from 'react-native'
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -23,6 +23,8 @@ const CreateAccount = ({ navigation }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
+    const [confirmpassword, setConfirmPassword] = useState('')
+
 
     const [username, setUsername] = useState('')
     const [phone, setPhone] = useState('')
@@ -37,6 +39,26 @@ const CreateAccount = ({ navigation }) => {
     const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 
 
+    useEffect(() => {
+        function ConfirmPassword(){
+            console.log(password +" == "+ confirmpassword);
+
+            setPasswordError(password.length <= 7 ? true : false);
+
+            if(confirmpassword == password){
+                setConfirmPasswordError(false);
+            }else{
+                setConfirmPasswordError(true);
+            }
+        }
+
+        ConfirmPassword();
+    
+      return () => {
+        
+      }
+    }, [password, confirmpassword])
+    
 
     /*  */
     async function RegisterUser(){
@@ -93,20 +115,6 @@ const CreateAccount = ({ navigation }) => {
             
         } catch (e) {
             console.error("Error adding document: ", e);
-        }
-    }
-
-    function WritePassword(text){
-        setPassword(text);
-        //console.log(text <= 7 ? text +": " + true : text +": "  + false)
-        setPasswordError(text.length <= 7 ? true : false);
-        ConfirmPassword(text);
-    }
-    function ConfirmPassword(text){
-        if(text == password){
-            setConfirmPasswordError(false);
-        }else{
-            setConfirmPasswordError(true);
         }
     }
 
@@ -172,7 +180,7 @@ const CreateAccount = ({ navigation }) => {
                             secureTextEntry={true}
 
                             value = {password}
-                            onChange = {(e) => WritePassword(e.nativeEvent.text)}
+                            onChange = {(e) => setPassword(e.nativeEvent.text)}
                             errorMessage = {passwordError ? "Password too short" : ""}
                         />
                         <Input placeholder = 'Confirm password' 
@@ -184,8 +192,9 @@ const CreateAccount = ({ navigation }) => {
                             color= {Themes.COLORS.ICON1}
                             />}
                             secureTextEntry={true}
-                            onChange = {(e) => ConfirmPassword(e.nativeEvent.text)}
+                            onChange = {(e) => setConfirmPassword(e.nativeEvent.text)}
                             errorMessage = {confirmPasswordError ? "Passwords doesn't match" : ""} 
+                            value ={confirmpassword}
                         />
                     </View>
                     <View style={{alignItems: 'center'}}>
