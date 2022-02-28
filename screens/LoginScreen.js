@@ -26,6 +26,9 @@ const LoginScreen = ({ navigation }) => {
     const [emailError, setEmailError] = useState(false);
     const [notFoundError, setNotFoundError] = useState(false);
 
+    const [notFoundErrorMessage, setNotFoundErrorMessage] = useState('');
+
+
     const [{user}, dispatch] = useStateValue();
 
     async function LogIn(){
@@ -60,6 +63,10 @@ const LoginScreen = ({ navigation }) => {
                 case "auth/wrong-password":
                     setNotFoundError(true);
                     setEmailError(false);
+                case "auth/user-not-found":
+                    setNotFoundError(true);
+                    setEmailError(false);
+
             }
         });
     }    
