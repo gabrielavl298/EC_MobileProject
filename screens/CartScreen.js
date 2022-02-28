@@ -23,18 +23,6 @@ const CartScreen = ({navigation}) => {
     const [{user}, dispatchUser] = useStateValue({});
     const [enProducts, setEnProducts] = useState([]);
 
-    const getMovies = async () => {
-        try {
-        const response = await fetch('https://reactnative.dev/movies.json');
-        const json = await response.json();
-        setData(json.movies);
-        } catch (error) {
-        console.error(error);
-        } finally {
-        setLoading(false);
-        }
-    }
-
     const removeItem = async(id) => {
         let saved = await DeleteFromDataBase(id);
         if(saved){

@@ -61,22 +61,7 @@ const LoginScreen = ({ navigation }) => {
                     setNotFoundError(true);
             }
         });
-    }
-
-    async function GetUserData(userID){
-        let found = false;
-        const docRef = doc(db, "cities", userID);
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-            console.log("Document data:", docSnap.data());
-            found = true;
-        } else {
-        // doc.data() will be undefined in this case
-            console.log("No such document!");
-        }
-    }
-    
+    }    
 
     return (
         <ScrollView style = {styles.container}>

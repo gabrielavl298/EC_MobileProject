@@ -28,7 +28,7 @@ export const authActionTypes = {
     LOGOUT_USER: "LOGOUT_USER"
 }
 
-//Action for Auth
+//Action for order list
 export const orderActionTypes = {
     ADD_ORDER_TO_LIST: "ADD_ORDER_TO_LIST",
     CLONE_ORDER_LIST_FROM_DB: "CLONE_ORDER_LIST_FROM_DB",
@@ -147,6 +147,7 @@ const reducer = (state, action) => {
                 }
             }
 
+            /* Order list cases */
         case "ADD_ORDER_TO_LIST":
             //console.log("Entro a reduce : ADD ORDER LIST. \n data: \n",  action)
             return {
