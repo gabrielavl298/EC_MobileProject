@@ -30,6 +30,7 @@ const CreateAccount = ({ navigation }) => {
     const [{user}, dispatch] = useStateValue();
 
     const [emailError, setEmailError] = useState(false);
+    const [emailErrorString, setEmailErrorString] = useState("")
     const [notFoundError, setNotFoundError] = useState(false);
     
     const [passwordError, setPasswordError] = useState(false)
@@ -39,6 +40,7 @@ const CreateAccount = ({ navigation }) => {
 
     /*  */
     async function RegisterUser(){
+        setEmailError(false);
         await createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
             // Signed in
@@ -69,7 +71,18 @@ const CreateAccount = ({ navigation }) => {
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
-            console.log(errorCode);        
+            console.log(errorCode);     
+            
+            switch(errorCode){
+                case "auth/invalid-email":
+                    setEmailError(true);
+                    setEmailErrorString("Email address invalid");
+                    
+                    break;
+                case "auth/email-already-in-use":
+                    setEmailError(true);
+                    setEmailErrorString("This email is already in use");
+            }
         });
     }
 
@@ -85,7 +98,9 @@ const CreateAccount = ({ navigation }) => {
 
     function WritePassword(text){
         setPassword(text);
-        setPasswordError(password.length < 7 ? true : false);
+        //console.log(text <= 7 ? text +": " + true : text +": "  + false)
+        setPasswordError(text.length <= 7 ? true : false);
+        ConfirmPassword(text);
     }
     function ConfirmPassword(text){
         if(text == password){
@@ -142,6 +157,7 @@ const CreateAccount = ({ navigation }) => {
                             autoCompleteType = 'off'
                             value = {email}
                             onChange = {(e) => setEmail(e.nativeEvent.text)}
+                            errorMessage = {emailError ? emailErrorString : ""}
                         />
                     </View>
                     <View>
@@ -178,6 +194,8 @@ const CreateAccount = ({ navigation }) => {
                                 title = 'Sign up'
                                 buttonStyle = {{backgroundColor: Themes.COLORS.PRIMARY}}
                                 onPress={() => RegisterUser()}
+                                disabled = {(username.length == 0 || phone.length == 0 ||
+                                    email.length == 0 || passwordError || confirmPasswordError  )}
                             />
                         </View>
                     </View>
